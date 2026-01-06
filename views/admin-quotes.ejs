@@ -1,0 +1,55 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Manage Quotes</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Add, edit, or delete motivational quotes for your users.
+</p>
+
+<div class="card">
+  <h3>Add New Quote</h3>
+  <form action="/admin/add-quote" method="POST" class="stats-grid" style="align-items: end;">
+    <div class="form-group"><label>Quote Text</label><input type="text" name="quote" placeholder="Enter new quote..." required></div>
+    <div class="form-group">
+      <label>Mood</label>
+      <select name="mood">
+        <option value="happy">Happy</option><option value="sad">Sad</option><option value="calm">Calm</option><option value="angry">Angry</option><option value="excited">Excited</option><option value="anxious">Anxious</option><option value="neutral">Neutral</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select name="category">
+        <option value="positivity">Positivity</option><option value="success">Success</option><option value="fitness">Fitness</option><option value="self-love">Self Love</option>
+      </select>
+    </div>
+    <button type="submit" class="btn">Add Quote</button>
+  </form>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+  <h3>Existing Quotes</h3>
+  <table class="admin-table">
+    <tr>
+      <th style="width: 50%;">Quote</th>
+      <th>Mood</th>
+      <th>Category</th>
+      <th>Actions</th>
+    </tr>
+    <% quotes.forEach(q => { %>
+      <tr>
+        <td><%= q.quote %></td>
+        <td><%= q.mood %></td>
+        <td><%= q.category %></td>
+        <td>
+          <div class="action-buttons">
+            <form action="/admin/delete-quote/<%= q.id %>" method="POST" onsubmit="return confirm('DELETE this quote?')">
+              <button type="submit" class="btn">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</div>
+
+<%- include('partials/_footer') %>

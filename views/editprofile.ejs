@@ -1,0 +1,39 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Edit Profile</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Update your name, password, or profile picture.
+</p>
+
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+  <form action="/edit-profile" method="POST" enctype="multipart/form-data" style="text-align: left;">
+    
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="<%= user.name %>" placeholder="Enter new name">
+    </div>
+    
+    <div class="form-group">
+      <label for="profile_pic">Profile Picture</label>
+      <input type="file" id="profile_pic" name="profile_pic" style="padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
+
+    <h3 style="margin-bottom: 10px;">Change Password (Optional)</h3>
+    <div class="form-group">
+      <label for="current_password">Current Password</label>
+      <input type="password" id="current_password" name="current_password" placeholder="Enter your current password">
+    </div>
+    
+    <div class="form-group">
+      <label for="new_password">New Password</label>
+      <input type="password" id="new_password" name="new_password" placeholder="Enter a new password">
+    </div>
+    
+    <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Update Profile</button>
+  </form>
+</div>
+
+<%- include('partials/_footer') %>

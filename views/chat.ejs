@@ -1,0 +1,117 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>AI Friend</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Here to listen, support, and offer tips. Your conversation is private.
+</p>
+
+<div class="card chat-window">
+  
+  <!-- Message Display Area -->
+  <div class="messages-container" id="messagesContainer">
+    <% if (recentMessages.length === 0) { %>
+      <div class="message">
+        <div class="message-bubble assistant">
+          Hello! I'm your AI wellness companion. You can ask me for advice, vent about your day, or just say hi.
+        </div>
+      </div>
+    <% } else { %>
+      <% recentMessages.forEach(m => { %>
+        <div class="message <%= m.role === 'user' ? 'user' : '' %>">
+          <div class="message-bubble <%= m.role === 'user' ? 'user' : 'assistant' %>">
+            <%= m.content %>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <!-- Typing Indicator (hidden by default) -->
+  <div class="message" id="typingIndicator" style="display: none;">
+    <div class="message-bubble assistant typing">
+      <div class="typing-indicator">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="chat-input-area">
+    <input type="text" id="userInput" placeholder="Type your message here..." autocomplete="off">
+    <button class="btn" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+  </div>
+</div>
+
+
+<script>
+  const messagesContainer = document.getElementById('messagesContainer');
+  const userInput = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const typingIndicator = document.getElementById('typingIndicator');
+
+  // Helper to add a new message to the UI
+  function appendMessage(role, text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${role === 'user' ? 'user' : ''}`;
+    
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = `message-bubble ${role}`;
+    bubbleDiv.innerText = text;
+
+    messageDiv.appendChild(bubbleDiv);
+    messagesContainer.appendChild(messageDiv);
+    // Remove the typing indicator before scrolling
+    typingIndicator.remove(); 
+    messagesContainer.appendChild(typingIndicator); 
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  // Main function to send a message
+  async function sendMessage() {
+    const messageText = userInput.value.trim();
+    if (!messageText) return;
+
+    appendMessage('user', messageText);
+    userInput.value = '';
+    sendBtn.disabled = true;
+    typingIndicator.style.display = 'flex';
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: messageText })
+      });
+      
+      const data = await res.json();
+      
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+      } else {
+        appendMessage('assistant', `Error: ${data.error || 'Unknown error'}`);
+      }
+
+    } catch (e) {
+      appendMessage('assistant', 'Sorry, there was a network error. Please try again.');
+    } finally {
+      sendBtn.disabled = false;
+      typingIndicator.style.display = 'none';
+      userInput.focus();
+    }
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  userInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Auto-scroll to the bottom on page load
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+</script>
+
+<%- include('partials/_footer') %>

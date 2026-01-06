@@ -1,0 +1,141 @@
+/* /public/css/auth.css */
+
+/* --- 1. Design System & Imports --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #27ae60;
+  --primary-dark: #229954;
+  --secondary-color: #3498db;
+  --bg-color: #f4f7f6;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-light: #777777;
+  --border-color: #e0e0e0;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
+}
+
+/* --- 2. Global & Body Styles --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* --- 3. Animation --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 4. Auth Card Layout (for Login/Signup) --- */
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.auth-card {
+  background-color: var(--card-bg);
+  padding: 40px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+/* ... (other auth styles remain the same) ... */
+
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group input { width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 16px; }
+.password-wrapper { position: relative; display: flex; align-items: center; }
+.password-wrapper i { position: absolute; right: 15px; cursor: pointer; color: #aaa; }
+.switch-auth-link { margin-top: 25px; font-size: 14px; }
+.switch-auth-link a { color: var(--primary-color); font-weight: 500; text-decoration: none; }
+
+
+/* --- 5. NEW Landing Page "Hero" Styles --- */
+.hero-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  max-width: 1100px;
+  width: 100%;
+  background-color: var(--card-bg);
+  padding: 60px;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.hero-text h1 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.hero-text .logo-leaf {
+  color: var(--primary-color);
+}
+
+.hero-text p {
+  font-size: 18px;
+  color: var(--text-light);
+  margin-bottom: 30px;
+}
+
+.hero-actions .btn {
+  margin-right: 15px;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- 6. Button Styles (Updated) --- */
+.btn {
+  display: inline-block; /* Changed for side-by-side layout */
+  text-align: center;
+  text-decoration: none;
+  padding: 12px 30px; /* More padding */
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* New outline button style */
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: white;
+}

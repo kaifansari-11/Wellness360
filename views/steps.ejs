@@ -1,0 +1,117 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Step Counter</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Track your daily activity and celebrate your progress.
+</p>
+
+<!-- Stat Cards -->
+<div class="stats-grid">
+  <div class="card" style="text-align: center;">
+    <h3>📅 Today</h3>
+    <p style="font-size: 24px; font-weight: 600;"><%= todaySteps %></p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3>🎯 Goal</h3>
+    <p style="font-size: 24px; font-weight: 600;"><%= goal %></p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3>🏆 Best Day</h3>
+    <% if (bestDay) { %>
+      <p style="font-size: 24px; font-weight: 600;"><%= bestDay.steps %></p>
+      <small><%= new Date(bestDay.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) %></small>
+    <% } else { %>
+      <p style="font-size: 24px; font-weight: 600;">-</p>
+    <% } %>
+  </div>
+</div>
+
+
+<div class="card" style="margin-top: 20px; max-width: 500px; margin-left: auto; margin-right: auto;">
+  <h3>Update Your Progress</h3>
+  <form action="/steps/add" method="POST">
+    <div class="form-group">
+      <label for="steps">Add More Steps</label>
+      <input type="number" name="steps" id="steps" placeholder="e.g., 2000">
+    </div>
+    <div class="form-group">
+      <label for="goal">Set New Daily Goal</label>
+      <input type="number" name="goal" id="goal" value="<%= goal %>" required>
+    </div>
+    <button type="submit" class="btn" style="width: 100%;">Save Changes</button>
+  </form>
+</div>
+
+<!-- Main Content Card -->
+<div class="card" style="margin-top: 20px;">
+  <!-- Badges -->
+  <% if (badges.length) { %>
+    <div style="text-align:center; margin-bottom: 20px;">
+      <% badges.forEach(b => { %>
+        <span class="badge" style="background-color: var(--primary-color); color: white; font-size: 14px;"><%= b %></span>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Weekly Progress Graph -->
+  <h3>Last 7 Days Progress</h3>
+  <div class="chart-container chart-container-lg">
+    <canvas id="stepsChart"></canvas>
+  </div>
+</div>
+
+<script>
+  const stepsChartCtx = document.getElementById('stepsChart');
+  const weeklyData = <%- JSON.stringify(weeklyData) %>;
+  const labels = weeklyData.map(d => new Date(d.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }));
+  const steps = weeklyData.map(d => d.steps);
+  const goals = weeklyData.map(d => d.goal);
+
+  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+  const primaryBgTint = getComputedStyle(document.documentElement).getPropertyValue('--primary-bg-tint');
+  
+  const gradient = stepsChartCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, primaryColor + '60');
+  gradient.addColorStop(1, primaryBgTint);
+
+  new Chart(stepsChartCtx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Steps',
+          data: steps,
+          borderColor: primaryColor,
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: primaryColor,
+          pointRadius: 4
+        },
+        {
+          label: 'Goal',
+          data: goals,
+          borderColor: '#cccccc',
+          borderDash: [5, 5],
+          fill: false,
+          tension: 0.4,
+          pointStyle: 'dash'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+<%- include('partials/_footer') %>

@@ -1,0 +1,82 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Mood History & Trends</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Visualize your emotional patterns over time.
+</p>
+
+<div class="stats-grid">
+  <div class="card">
+    <h3>Last 7 Days</h3>
+    <div class="chart-container chart-container-lg">
+      <canvas id="lineChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h3>Last 30 Days</h3>
+    <div class="chart-container chart-container-lg">
+      <canvas id="doughnutChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+  const moodData7  = <%- JSON.stringify(mood7Days) %>;
+  const moodData30 = <%- JSON.stringify(mood30Days) %>;
+
+  // Helper function to get theme colors
+  const moodThemeColors = {
+    happy: '#fbc02d', sad: '#1976d2', angry: '#d32f2f',
+    calm: '#388e3c', anxious: '#7b1fa2', excited: '#f57c00', neutral: '#546e7a'
+  };
+  function getMoodColor(mood) {
+    return moodThemeColors[mood.toLowerCase()] || '#cccccc';
+  }
+
+  // -------- Line Chart (7 days) --------
+  if (moodData7.length > 0) {
+    const dates = [...new Set(moodData7.map(i => new Date(i.date).toLocaleDateString('en-GB', {day:'2-digit', month:'short'})))];
+    const moods = [...new Set(moodData7.map(i => i.mood))];
+
+    const datasets = moods.map(m => ({
+      label: m,
+      data: dates.map(d => {
+        const found = moodData7.find(i => new Date(i.date).toLocaleDateString('en-GB', {day:'2-digit', month:'short'}) === d && i.mood === m);
+        return found ? Number(found.count) : 0;
+      }),
+      borderColor: getMoodColor(m),
+      backgroundColor: getMoodColor(m) + '30', 
+      tension: 0.3,
+      fill: false
+    }));
+
+    new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: { labels: dates, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+      }
+    });
+  }
+
+  // -------- Doughnut Chart (30 days) --------
+  if (moodData30.length > 0) {
+    new Chart(document.getElementById('doughnutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: moodData30.map(m => m.mood),
+        datasets: [{
+          data: moodData30.map(m => Number(m.count)),
+          backgroundColor: moodData30.map(m => getMoodColor(m.mood))
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+  }
+</script>
+
+<%- include('partials/_footer') %>

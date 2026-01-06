@@ -1,0 +1,94 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Habit Progress</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Visualize your consistency over the last 30 days.
+</p>
+
+<div class="card">
+  <div class="chart-container chart-container-lg">
+    <canvas id="habitProgressChart"></canvas>
+  </div>
+</div>
+
+<script>
+  const progressChartCtx = document.getElementById('habitProgressChart');
+  const progressGraphData = <%- JSON.stringify(graphData || []) %>;
+
+  if (progressGraphData.length > 0) {
+    const progressLabels = progressGraphData.map(item =>
+      new Date(item.day).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
+    );
+    const completedData = progressGraphData.map(item => item.done);
+    const totalData = progressGraphData.map(item => item.total);
+
+    // Theme colors from CSS variables
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+    const primaryBgTint = getComputedStyle(document.documentElement).getPropertyValue('--primary-bg-tint').trim();
+
+    // Gradient for completed habits fill
+    const gradient = progressChartCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, primaryColor + '99'); // Semi-transparent top
+    gradient.addColorStop(1, primaryBgTint || '#f5f5f5');
+
+    new Chart(progressChartCtx, {
+      type: 'line',
+      data: {
+        labels: progressLabels,
+        datasets: [
+          {
+            label: 'Completed Habits',
+            data: completedData,
+            borderColor: primaryColor,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: primaryColor,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            pointHoverBorderWidth: 3
+          },
+          {
+            label: 'Total Habits',
+            data: totalData,
+            borderColor: '#aaa',
+            borderDash: [6, 6],
+            fill: false,
+            tension: 0.3,
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 15 } },
+          tooltip: {
+            backgroundColor: '#333',
+            titleFont: { size: 14, family: 'Poppins', weight: '600' },
+            bodyFont: { size: 12, family: 'Poppins' },
+            padding: 10,
+            displayColors: false
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11, family: 'Poppins' } }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1, font: { size: 11, family: 'Poppins' } },
+            grid: { color: '#eee' }
+          }
+        }
+      }
+    });
+  }
+</script>
+
+<%- include('partials/_footer') %>

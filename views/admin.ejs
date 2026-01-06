@@ -1,0 +1,103 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Admin Dashboard</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Manage users, site content, and view activity stats.
+</p>
+
+<div class="stats-grid">
+  <div class="card" style="text-align: center;">
+    <h3>👥 Total Users</h3>
+    <p style="font-size: 24px; font-weight: 600;"><%= stats.total_users %></p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3>📝 Moods Logged</h3>
+    <p style="font-size: 24px; font-weight: 600;"><%= stats.total_moods %></p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3>🔥 Habits Done</h3>
+    <p style="font-size: 24px; font-weight: 600;"><%= stats.total_habits_done %></p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3>💪 Workouts</h3>
+    <p style="font-size: 24px; font-weight: 600;"><%= stats.total_exercises %></p>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+  <h3>User Management</h3>
+  <form action="/admin" method="GET" style="max-width: 400px; margin-top: 15px;">
+    <div class="form-group">
+      <input type="text" name="search" placeholder="Search by name or email..." value="<%= search %>">
+    </div>
+  </form>
+
+  <table class="admin-table">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    <% users.forEach(u => { %>
+      <tr>
+        <td><%= u.name %></td>
+        <td><%= u.email %></td>
+        <td><%= u.status || 'active' %></td>
+        <td>
+          <div class="action-buttons">
+            <form action="/admin/toggle-ban/<%= u.id %>" method="POST" onsubmit="return confirm('Are you sure?')">
+              <button type="submit" class="btn btn-tinted"><%= u.status === 'banned' ? 'Unban' : 'Ban' %></button>
+            </form>
+            <form action="/admin/delete/<%= u.id %>" method="POST" onsubmit="return confirm('DELETE this user permanently?')">
+              <button type="submit" class="btn">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+  <h3>Overall User Activity</h3>
+  <div class="chart-container chart-container-sm">
+      <canvas id="activityChart"></canvas>
+  </div>
+</div>
+
+<script>
+  // Chart.js script for the activity chart
+  new Chart(document.getElementById('activityChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Moods Logged', 'Habits Completed', 'Workouts Done'],
+      datasets: [{
+        label: 'Total Activities',
+        data: [<%= stats.total_moods %>, <%= stats.total_habits_done %>, <%= stats.total_exercises %>],
+        backgroundColor: [
+            'rgba(251, 192, 45, 0.7)',
+            'rgba(56, 142, 60, 0.7)',
+            'rgba(211, 47, 47, 0.7)'
+        ],
+        borderColor: [
+            '#fbc02d',
+            '#388e3c',
+            '#d32f2f'
+        ],
+        borderWidth: 2,
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 10 } } }
+    }
+  });
+</script>
+
+
+<%- include('partials/_footer') %>

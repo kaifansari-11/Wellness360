@@ -1,0 +1,70 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>To-Do List</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Stay organized and focused on what matters.
+</p>
+
+<div class="card">
+  
+  <div class="progress-summary">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: 500;">
+      <span>Progress</span>
+      <span><%= progress.percentage %>%</span>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" style="width: <%= progress.percentage %>%;"></div>
+    </div>
+  </div>
+
+  <div class="stats-grid" style="margin-bottom: 30px;">
+    <div class="card" style="text-align: center;">
+      <p style="margin: 0; font-size: 24px; font-weight: 600;"><%= progress.completed %></p>
+      <span style="color: var(--text-light);">Completed</span>
+    </div>
+    <div class="card" style="text-align: center;">
+      <p style="margin: 0; font-size: 24px; font-weight: 600;"><%= progress.total - progress.completed %></p>
+      <span style="color: var(--text-light);">Remaining</span>
+    </div>
+  </div>
+
+  <hr style="border: 1px solid var(--border-color); margin: 30px 0;">
+
+  <form action="/todo/add" method="POST" style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px;">
+    <div class="form-group" style="flex-grow: 1; margin: 0;">
+      <input type="text" name="task" placeholder="Add a new task..." required>
+    </div>
+    <button type="submit" class="btn">Add Task</button>
+  </form>
+
+  <ul class="todo-list">
+    <% if (tasks.length === 0) { %>
+      <p style="text-align: center; color: var(--text-light);">All clear! Add a task above to get started.</p>
+    <% } else { %>
+      <% tasks.forEach(task => { %>
+        <li class="todo-item <%= task.status === 'completed' ? 'completed' : '' %>">
+          
+          <form action="/todo/toggle/<%= task.id %>" method="POST">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              onchange="this.form.submit()"
+              <%= task.status === 'completed' ? 'checked' : '' %>
+            >
+          </form>
+
+          <span class="task-text"><%= task.task %></span>
+          
+          <form action="/todo/delete/<%= task.id %>" method="POST">
+            <button type="submit" class="btn-delete" title="Delete Task">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </form>
+        </li>
+      <% }) %>
+    <% } %>
+  </ul>
+</div>
+
+<%- include('partials/_footer') %>

@@ -1,0 +1,120 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>How are you feeling right now?</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px; text-align: center;">
+  Select a mood below to log it for today.
+</p>
+
+<form action="/mood" method="POST" id="moodForm" style="display: none;">
+  <input type="hidden" name="mood" id="moodInput">
+</form>
+
+<div class="mood-selection-grid">
+  <div class="mood-card" data-mood="Happy">
+    <div class="emoji">😊</div>
+    <div class="label">Happy</div>
+  </div>
+  <div class="mood-card" data-mood="Excited">
+    <div class="emoji">🤩</div>
+    <div class="label">Excited</div>
+  </div>
+  <div class="mood-card" data-mood="Calm">
+    <div class="emoji">😌</div>
+    <div class="label">Calm</div>
+  </div>
+  <div class="mood-card" data-mood="Neutral">
+    <div class="emoji">😐</div>
+    <div class="label">Neutral</div>
+  </div>
+  <div class="mood-card" data-mood="Anxious">
+    <div class="emoji">😟</div>
+    <div class="label">Anxious</div>
+  </div>
+  <div class="mood-card" data-mood="Sad">
+    <div class="emoji">😢</div>
+    <div class="label">Sad</div>
+  </div>
+  <div class="mood-card" data-mood="Angry">
+    <div class="emoji">😠</div>
+    <div class="label">Angry</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 40px;">
+  <h3>Your Recent Moods (Last 30 Days)</h3>
+  <div class="chart-container chart-container-sm" style="margin-top: 15px;">
+    <canvas id="moodBarChart"></canvas>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const moodCards = document.querySelectorAll('.mood-card');
+    const moodForm = document.getElementById('moodForm');
+    const moodInput = document.getElementById('moodInput');
+
+    moodCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const selectedMood = card.getAttribute('data-mood');
+        moodInput.value = selectedMood;
+        moodForm.submit();
+      });
+    });
+  });
+</script>
+
+<script>
+  const moodBarChartCtx = document.getElementById('moodBarChart');
+  const moodData = <%- JSON.stringify(moodData || []) %>;
+  
+  // This helper function gets the right color for each mood
+  const moodThemeColors = {
+      happy: '#fbc02d',
+      sad: '#1976d2',
+      angry: '#d32f2f',
+      calm: '#388e3c',
+      anxious: '#7b1fa2',
+      excited: '#f57c00',
+      neutral: '#546e7a'
+  };
+
+  if (moodData.length > 0) {
+    const labels = moodData.map(item => item.mood);
+    const counts = moodData.map(item => item.count);
+    // Create a dynamic color array for the bars
+    const backgroundColors = labels.map(label => moodThemeColors[label.toLowerCase()] || '#cccccc');
+
+    new Chart(moodBarChartCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Mood Count',
+          data: counts,
+          backgroundColor: backgroundColors,
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { 
+          legend: { display: false }
+        },
+        scales: { 
+          y: { 
+            beginAtZero: true, 
+            ticks: { stepSize: 1 } 
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+</script>
+
+<%- include('partials/_footer') %>

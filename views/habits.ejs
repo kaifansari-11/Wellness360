@@ -1,0 +1,124 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Habit Tracker</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Consistency is key. Track your daily habits here.
+</p>
+
+<div class="stats-grid">
+  <div class="card" style="text-align: center;">
+    <h3>Today's Progress</h3>
+    <% const totalToday = habits.length; %>
+    <% const doneToday = habits.filter(h => h.status === 'done').length; %>
+    <p style="font-size: 24px; font-weight: 600;"><%= doneToday %> / <%= totalToday %> Done</p>
+  </div>
+  <div class="card" style="text-align: center;">
+    <h3>Longest Streak</h3>
+    <% let longestStreak = 0; %>
+    <% if (streaks && streaks.length) { streaks.forEach(s => { if(s.streak > longestStreak) longestStreak = s.streak; }); } %>
+    <p style="font-size: 24px; font-weight: 600;">🔥 <%= longestStreak %> Days</p>
+  </div>
+</div>
+
+<div class="card">
+  <form action="/habits/add" method="POST" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="text" name="habit_name" placeholder="Add a new habit..." class="form-group" style="flex-grow: 1; margin: 0;">
+    <button type="submit" class="btn">Add</button>
+  </form>
+
+  <ul class="habit-list">
+    <% if (habits.length === 0) { %>
+      <p style="text-align: center; color: var(--text-light);">No habits added yet. Add one above to get started!</p>
+    <% } else { %>
+      <% habits.forEach(habit => { %>
+        <li class="habit-item">
+          <div class="habit-info">
+            <span class="name" style="text-decoration: <%= habit.status === 'done' ? 'line-through' : 'none' %>;">
+              <%= habit.habit_name %>
+            </span>
+            <span class="streak">
+              Streak: <%= (streaks.find(s => s.habit_id === habit.id)?.streak) || 0 %> days
+            </span>
+          </div>
+          <div class="habit-actions">
+            <% if (habit.status === 'pending') { %>
+              <form action="/habits/done/<%= habit.id %>" method="POST">
+                <button type="submit" class="btn btn-done">Done</button>
+              </form>
+            <% } else { %>
+              <span style="color: var(--primary-color); font-weight: 500;">✔️ Completed</span>
+            <% } %>
+            <form action="/habits/delete/<%= habit.id %>" method="POST">
+              <button type="submit" class="btn-delete" title="Delete Habit"><i class="fa-solid fa-trash"></i></button>
+            </form>
+          </div>
+        </li>
+      <% }) %>
+    <% } %>
+  </ul>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+    <h3>Last 7 Days Progress</h3>
+    <a href="/habit-progress" class="link-button">View detailed progress report &rarr;</a>
+    
+    <div class="chart-container chart-container-sm" style="margin-top: 15px;">
+      <canvas id="habitChart"></canvas>
+    </div>
+</div>
+
+<script>
+  const habitChartCtx = document.getElementById('habitChart');
+  const graphData = <%- JSON.stringify(graphData || []) %>;
+  
+  if (graphData.length > 0) {
+    const labels = graphData.map(item => new Date(item.day).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }));
+    const completedData = graphData.map(item => item.done);
+    const pendingData = graphData.map(item => item.total - item.done); 
+
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+    const pendingColor = '#e0e0e0';
+
+    new Chart(habitChartCtx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Completed',
+            data: completedData,
+            backgroundColor: primaryColor,
+            borderRadius: 5,
+            borderWidth: 0
+          },
+          {
+            label: 'Pending',
+            data: pendingData,
+            backgroundColor: pendingColor,
+            borderRadius: 5,
+            borderWidth: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { 
+          legend: { display: true, position: 'top' },
+          tooltip: {
+            backgroundColor: '#333',
+            titleFont: { size: 14, family: 'Poppins' },
+            bodyFont: { size: 12, family: 'Poppins' },
+          }
+        },
+        scales: { 
+          y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } },
+          x: { stacked: true, grid: { display: false } }
+        }
+      }
+    });
+  }
+</script>
+
+<%- include('partials/_footer') %>

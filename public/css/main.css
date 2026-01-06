@@ -1,0 +1,865 @@
+/* /public/css/main.css */
+
+/* --- 1. Design System: Colors & Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* In /public/css/main.css */
+:root {
+  --primary-color: #27ae60;
+  --primary-dark: #229954;
+  --primary-bg-tint: #eaf6ef;
+  --secondary-color: #3498db;
+  --sidebar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-light: #777777;
+  --border-color: #e0e0e0;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --border-radius: 12px;
+  
+  /* ✅ Add this new variable for better readability */
+  --primary-text-on-tint: #3d3d3d; /* A dark gray for high contrast */
+}
+
+/* --- 1b. Dynamic Theme Palettes (UPDATED) --- */
+body.happy { --primary-color: #fbc02d; --primary-dark: #f9a825; --primary-bg-tint: #fffde7; --primary-light-tint: #fff59d; }
+body.sad { --primary-color: #1976d2; --primary-dark: #1565c0; --primary-bg-tint: #e3f2fd; --primary-light-tint: #90caf9; }
+body.angry { --primary-color: #d32f2f; --primary-dark: #c62828; --primary-bg-tint: #ffebee; --primary-light-tint: #ef9a9a; }
+body.calm { --primary-color: #388e3c; --primary-dark: #2e7d32; --primary-bg-tint: #e8f5e9; --primary-light-tint: #a5d6a7; }
+body.anxious { --primary-color: #7b1fa2; --primary-dark: #6a1b9a; --primary-bg-tint: #f3e5f5; --primary-light-tint: #ce93d8; }
+body.excited { --primary-color: #f57c00; --primary-dark: #ef6c00; --primary-bg-tint: #fff3e0; --primary-light-tint: #ffcc80; }
+body.neutral { --primary-color: #546e7a; --primary-dark: #455a64; --primary-bg-tint: #eceff1; --primary-light-tint: #b0bec5; }
+
+
+/* --- 2. Global Resets & Body Styles --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  /* ✅ This line now uses the dynamic tint color */
+  background-color: var(--primary-bg-tint); 
+  color: var(--text-color);
+  font-weight: 400;
+  line-height: 1.6;
+  transition: background-color 0.4s ease; /* Smooth transition for theme changes */
+}
+
+/* /public/css/main.css */
+
+/* --- 3. Main App Layout (Sliding Sidebar Version) --- */
+.app-container {
+  display: grid;
+  /* The sidebar starts collapsed at 80px */
+  grid-template-columns: 80px 1fr; 
+  min-height: 100vh;
+  transition: grid-template-columns 0.4s ease;
+}
+
+/* When you hover the sidebar itself, the grid expands */
+.app-container:has(.sidebar:hover) {
+  grid-template-columns: 260px 1fr;
+}
+
+/* ✅ FIX: Explicitly position the main content in the second column */
+.main-content {
+  grid-column: 2 / 3;
+  padding: 40px;
+  overflow-y: auto;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* --- 4. Sidebar Navigation (Updated for Sliding) --- */
+.sidebar {
+  /* ✅ FIX: Explicitly position the sidebar in the first column */
+  grid-column: 1 / 2;
+  background-color: var(--sidebar-bg);
+  padding: 25px 15px;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 0.4s ease;
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 0 5px; /* Add some padding */
+}
+
+.sidebar-header .profile-pic {
+  width: 50px; /* Consistent size for the icon area */
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary-color);
+  margin-bottom: 15px;
+  transition: all 0.4s ease;
+}
+
+.sidebar:hover .sidebar-header .profile-pic {
+  width: 80px;
+  height: 80px;
+}
+
+.sidebar-header h3 {
+  font-weight: 600;
+  font-size: 18px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease 0.1s;
+}
+
+.sidebar:hover .sidebar-header h3 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sidebar-nav ul {
+  list-style: none;
+}
+
+.sidebar-nav li a {
+  display: flex;
+  align-items: center;
+  padding: 14px;
+  text-decoration: none;
+  color: var(--text-light);
+  border-radius: 8px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.sidebar-nav li a:hover, .sidebar-nav li a.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.sidebar-nav li a .icon {
+  font-size: 22px;
+  min-width: 50px; /* This sets the width of the icon area */
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.sidebar-nav li a .link-text {
+  margin-left: 15px;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.sidebar:hover .sidebar-nav li a .link-text {
+  opacity: 1;
+}
+
+.logout-link {
+  margin-top: auto;
+}
+/* In /public/css/main.css */
+
+/* --- 5. Reusable Components: Cards, Buttons, Forms --- */
+
+/* Cards */
+.card {
+  background-color: var(--card-bg);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.btn-tinted {
+  background-color: var(--primary-light-tint);
+  color: var(--primary-text-on-tint);
+  border: none;
+}
+
+.btn-tinted:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* ✅ UPDATED Forms Section */
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+/* This new global rule targets all inputs and selects */
+.form-group input,
+.form-group select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-family: 'Poppins', sans-serif; /* The correct font */
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+/* /public/css/main.css */
+
+/* --- 6. Modal / Pop-Up Styles --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: none; /* Hidden by default */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transform: scale(0.95);
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.modal-actions a {
+  display: block;
+  padding: 12px;
+  margin: 10px 0;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.modal-actions a:hover {
+  background-color: var(--primary-dark);
+  transform: scale(1.03);
+}
+
+#closeModal {
+  margin-top: 20px;
+  padding: 8px 20px;
+  background: #e0e0e0;
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+#closeModal:hover {
+  background: #cccccc;
+  color: var(--text-color);
+}
+
+/* /public/css/main.css */
+
+/* --- 7. Mood Selection Page Styles --- */
+.mood-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.mood-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 25px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow);
+}
+
+.mood-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-color);
+}
+
+.mood-card .emoji {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.mood-card .label {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* This ensures that links styled as buttons also get our new rounded corners */
+a.btn {
+  border-radius: var(--border-radius);
+  text-decoration: none; /* Also removes the underline */
+}
+
+/* /public/css/main.css */
+
+/* --- 8. Profile Page Specific Styles --- */
+
+.profile-header {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping on small screens */
+  align-items: center;
+  gap: 30px;
+}
+
+.profile-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between; /* This is the key change */
+  flex-grow: 1; /* Allows this section to take up remaining space */
+}
+
+.profile-details {
+  text-align: left;
+}
+
+/* /public/css/main.css */
+
+/* --- 9. Habit Page Styles --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.habit-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.habit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.habit-item:last-child {
+  border-bottom: none;
+}
+
+.habit-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.habit-info .name {
+  font-weight: 500;
+}
+
+.habit-info .streak {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.habit-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.habit-actions .btn-done {
+  padding: 8px 15px;
+}
+
+.habit-actions .btn-delete {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.2s ease;
+}
+
+.habit-actions .btn-delete:hover {
+  color: #d32f2f; /* Red on hover */
+}
+
+/* /public/css/main.css */
+
+/* --- 10. Link Button Style --- */
+.link-button {
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.link-button:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* /public/css/main.css */
+
+/* --- 11. Chart & Link Updates --- */
+
+/* New Link Button Style */
+.link-button {
+  display: inline-block;
+  padding: 8px 16px;
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: none;
+  border-radius: 8px;
+  background-color: var(--primary-bg-tint);
+  transition: all 0.2s ease;
+  border: 1px solid var(--primary-bg-tint);
+}
+
+.link-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Chart Container for Sizing */
+.chart-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Modifier for a smaller chart */
+.chart-container-sm {
+  height: 250px; 
+}
+
+/* Modifier for a larger chart */
+.chart-container-lg {
+  height: 450px;
+}
+
+/* /public/css/main.css */
+
+/* In /public/css/main.css, replace the existing section 12 */
+
+/* --- 12. To-Do List Styles --- */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.todo-item:last-child {
+  border-bottom: none;
+}
+
+.todo-item .checkbox {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.todo-item .task-text {
+  flex-grow: 1;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.todo-item.completed .task-text {
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+
+/* ✅ This is the new style for the delete button */
+.todo-item .btn-delete {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.todo-item .btn-delete:hover {
+  background: #fde2e2;
+  color: #d32f2f;
+}
+
+/* /public/css/main.css */
+
+/* --- 14. To-Do Progress Styles --- */
+.progress-summary {
+  margin-bottom: 30px;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background-color: var(--primary-bg-tint);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 6px;
+  transition: width 0.5s ease-in-out;
+}
+
+/* /public/css/main.css */
+
+/* --- 15. Dashboard Widget Styles --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.progress-ring {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin: 15px auto;
+  background: conic-gradient(var(--primary-color) calc(var(--p, 0) * 1%), var(--primary-bg-tint) 0);
+  transition: background 0.4s ease;
+}
+
+.progress-ring::before {
+  content: "";
+  position: absolute;
+  height: 85%;
+  width: 85%;
+  border-radius: 50%;
+  background-color: var(--card-bg);
+}
+
+.progress-ring-text {
+  position: relative;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.progress-ring-text small {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-light);
+  display: block;
+  margin-top: -5px;
+}
+
+/* /public/css/main.css */
+
+/* --- 17. Exercise Page Styles --- */
+.exercise-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Main content takes 2/3, stats take 1/3 */
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.timer-clock {
+  font-size: 48px;
+  font-weight: 600;
+  margin: 15px 0;
+  color: var(--text-color);
+}
+
+.timer-progress-bar {
+  height: 12px;
+  background-color: var(--primary-bg-tint);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.timer-progress-fill {
+  height: 100%;
+  width: 0%;
+  background-color: var(--primary-color);
+  border-radius: 6px;
+  transition: width 0.5s linear;
+}
+
+.exercise-stats .stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.exercise-stats .stat-item:last-child {
+  border-bottom: none;
+}
+.exercise-stats .stat-item strong {
+  color: var(--primary-color);
+}
+
+/* /public/css/main.css */
+
+/* --- Add this to control GIF size and aspect ratio --- */
+.exercise-gif {
+  width: 100%;
+  max-height: 300px; /* Adjust this value as needed */
+  object-fit: contain; /* Ensures the whole image is visible without cropping */
+  border-radius: 8px;
+  margin-top: 15px;
+  background-color: var(--primary-bg-tint); /* Optional: add a background to fill empty space if object-fit is used */
+}
+
+/* In /public/css/main.css */
+
+.timer-input-group {
+  display: flex;
+  justify-content: center; /* ✅ This centers the items */
+  align-items: center;
+  gap: 10px;
+  max-width: 250px;
+  margin: 0 auto 15px auto; /* This centers the group itself */
+}
+
+/* /public/css/main.css */
+
+/* --- 19. Pomodoro Timer Styles --- */
+.pomodoro-container {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.timer-mode-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.timer-mode-buttons .btn {
+  background-color: transparent;
+  color: var(--text-light);
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.timer-mode-buttons .btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.pomodoro-clock-container {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+}
+
+.pomodoro-clock {
+  font-size: 80px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+#startStopBtn {
+  padding: 15px 40px;
+  font-size: 22px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#sessionsCount {
+  margin-top: 20px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+/* /public/css/main.css */
+
+/* --- 21. Chat Page Styles --- */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 70vh; /* Adjust height as needed */
+}
+
+.messages-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: var(--primary-bg-tint);
+  border-radius: var(--border-radius);
+}
+
+.message {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 75%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  line-height: 1.5;
+}
+
+.message-bubble.assistant {
+  background-color: #e9ecef;
+  color: var(--text-color);
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble.user {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+.chat-input-area input {
+  flex-grow: 1;
+  margin: 0;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+}
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  margin: 0 2px;
+  background-color: #ced4da;
+  border-radius: 50%;
+  display: inline-block;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+.typing-indicator span:nth-of-type(2) { animation-delay: -0.32s; }
+.typing-indicator span:nth-of-type(3) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1.0); }
+}
+
+/* /public/css/main.css */
+
+/* --- 22. Admin Page Styles --- */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-table th, .admin-table td {
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-table th {
+  background-color: var(--primary-bg-tint);
+  font-weight: 600;
+}
+
+.admin-table .action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.admin-table .action-buttons .btn {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+/* /public/css/main.css */
+
+/* --- 23. Chat Page Fixes --- */
+
+/* This targets the bubble that CONTAINS the typing indicator */
+.message-bubble.assistant.typing {
+  padding: 12px 15px; /* Add padding to contain the dots */
+  display: flex;
+  align-items: center;
+}

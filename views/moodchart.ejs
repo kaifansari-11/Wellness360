@@ -1,0 +1,48 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Overall Mood Summary</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  A summary of all moods you've logged.
+</p>
+
+<div class="card">
+  <div class="chart-container chart-container-lg">
+    <canvas id="moodBarChart"></canvas>
+  </div>
+</div>
+
+<script>
+  const moodData = <%- JSON.stringify(moodData) %>;
+  
+  const moodThemeColors = {
+      happy: '#fbc02d', sad: '#1976d2', angry: '#d32f2f',
+      calm: '#388e3c', anxious: '#7b1fa2', excited: '#f57c00', neutral: '#546e7a'
+  };
+
+  if (moodData.length > 0) {
+    const labels = moodData.map(item => item.mood);
+    const counts = moodData.map(item => item.count);
+    const backgroundColors = labels.map(label => moodThemeColors[label.toLowerCase()] || '#cccccc');
+
+    new Chart(document.getElementById('moodBarChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Mood Count',
+          data: counts,
+          backgroundColor: backgroundColors,
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { grid: { display: false } } }
+      }
+    });
+  }
+</script>
+
+<%- include('partials/_footer') %>

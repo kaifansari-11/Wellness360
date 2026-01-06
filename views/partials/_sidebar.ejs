@@ -1,0 +1,40 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <a href="<%= (user && user.role === 'admin') ? '/admin' : '/profile' %>" style="text-decoration: none; color: inherit;">
+      <img src="<%= (user && user.profile_pic) ? user.profile_pic : '/images/default.png' %>" alt="Profile" class="profile-pic">
+      <h3><%= user ? user.name : 'Guest' %></h3>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <% if (user && user.role === 'admin') { %>
+        <li><a href="/admin"><i class="icon fa-solid fa-user-shield"></i> <span class="link-text">Admin Dashboard</span></a></li>
+        <li><a href="/admin/quotes"><i class="icon fa-solid fa-quote-left"></i> <span class="link-text">Manage Quotes</span></a></li>
+      <% } else { %>
+        <li><a href="/dashboard"><i class="icon fa-solid fa-house"></i> <span class="link-text">Dashboard</span></a></li>
+        <li><a href="/mood"><i class="icon fa-solid fa-face-smile"></i> <span class="link-text">Track Mood</span></a></li>
+        <li><a href="/habits"><i class="icon fa-solid fa-star"></i> <span class="link-text">Habit Tracker</span></a></li>
+        <li><a href="/todo"><i class="icon fa-solid fa-list-check"></i> <span class="link-text">To-Do List</span></a></li>
+        <li><a href="/exercise"><i class="icon fa-solid fa-person-running"></i> <span class="link-text">Exercise Coach</span></a></li>
+        <li><a href="/steps"><i class="icon fa-solid fa-shoe-prints"></i> <span class="link-text">Step Counter</span></a></li>
+        <li><a href="/pomodoro"><i class="icon fa-solid fa-stopwatch"></i> <span class="link-text">Pomodoro Timer</span></a></li>
+        <li><a href="/chat"><i class="icon fa-solid fa-comments"></i> <span class="link-text">AI Friend</span></a></li>
+        <li><a href="/mood-history"><i class="icon fa-solid fa-chart-line"></i> <span class="link-text">Mood History</span></a></li>
+      <% } %>
+    </ul>
+  </nav>
+
+  <div class="logout-link">
+    <nav class="sidebar-nav">
+      <ul>
+        <% if (user && user.role !== 'admin') { %>
+          <li><a href="/profile"><i class="icon fa-solid fa-user"></i> <span class="link-text">My Profile</span></a></li>
+        <% } %>
+        <li><a href="/logout"><i class="icon fa-solid fa-right-from-bracket"></i> <span class="link-text">Logout</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</aside>
+
+<main class="main-content">

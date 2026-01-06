@@ -1,0 +1,170 @@
+/* public/css/style.css */
+body {
+  background-color: #f2f2f2;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  padding-top: 50px;
+}
+
+form {
+  display: inline-block;
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  margin: 10px 0;
+  padding: 10px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: block;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #38a169;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2f855a;
+}
+.password-wrapper {
+  position: relative;
+  width: fit-content;
+}
+
+.password-wrapper input {
+  padding-right: 10px; /* no extra space needed now */
+}
+
+.password-wrapper i {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translate(10px, -50%);
+  cursor: pointer;
+  color: #888;
+}
+body.default {
+  background-color: #e0f7fa;
+}
+
+body.happy {
+  background-color: #fff9c4; /* light yellow */
+}
+
+body.sad {
+  background-color: #bbdefb; /* light blue */
+}
+
+body.angry {
+  background-color: #ffcdd2; /* light red */
+}
+
+body.calm {
+  background-color: #c8e6c9; /* light green */
+}
+
+body.anxious {
+  background-color: #d1c4e9; /* purple-ish */
+}
+
+body.neutral {
+  background-color: #eeeeee; /* light gray */
+}
+
+body.excited {
+  background-color: #FFD580; /* light orange */
+}
+/* In public/css/style.css */
+
+.remember-wrapper {
+  text-align: left; /* Aligns the checkbox to the left of the form */
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 5px; /* Aligns with other inputs */
+}
+
+.remember-wrapper input[type="checkbox"] {
+  /* Reset properties from the general 'input' rule */
+  width: auto;
+  display: inline-block;
+  
+  /* Style the checkbox */
+  margin-right: 8px; /* This creates a clean space after the checkbox */
+  vertical-align: middle; /* Aligns checkbox with the text */
+  transform: scale(1.1);
+}
+
+.login-btn-wrapper {
+  text-align: center;
+}
+.todo-list {
+  list-style: none;
+  padding: 0;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.todo-item form {
+  margin: 0;
+}
+
+.delete-btn {
+  background-color: #38a169;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #2f855a;
+}
+
+nav a {
+  display: block;
+  margin: 10px;
+  text-decoration: none;
+  color: #333;
+}
+
+.habit-list {
+  list-style: none;
+  padding: 0;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.habit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+

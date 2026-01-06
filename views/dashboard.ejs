@@ -1,0 +1,127 @@
+<%- include('partials/_header') %>
+<%- include('partials/_sidebar') %>
+
+<h1>Dashboard</h1>
+<p style="color: var(--text-light); margin-top: -10px; margin-bottom: 30px;">
+  Welcome back, <%= user.name %>! Here's a quote to inspire you today.
+</p>
+
+<div class="dashboard-grid">
+
+  <div class="card" style="text-align: center;">
+    <h3>🚶‍♂️ Daily Steps</h3>
+    
+    <div class="progress-ring" style="--p:<%= steps.percentage %>;">
+      <div class="progress-ring-text">
+        <%= steps.today %>
+        <small>steps</small>
+      </div>
+    </div>
+    <p style="color: var(--text-light); margin-top: 0; font-weight: 500;">
+      Goal: <%= steps.goal %> steps
+    </p>
+
+    <form action="/steps/add" method="POST" style="margin-top: 20px;">
+      <div class="form-group">
+        <input type="number" name="steps" placeholder="Add more steps..." required>
+        <input type="hidden" name="goal" value="<%= steps.goal %>">
+      </div>
+      <button type="submit" class="btn">Add Steps</button>
+    </form>
+  </div>
+
+  <div class="card" style="text-align: center;">
+    <h3>✨ Motivational Quote ✨</h3>
+    <p id="quoteText" style="min-height: 40px; margin: 20px 0; font-size: 1.1em; color: var(--text-light);">Loading quote...</p>
+
+    <div class="form-group" style="margin-top: 20px;">
+      <select id="categorySelect">
+        <option value="">All Categories</option>
+        <option value="success">Success</option>
+        <option value="fitness">Fitness</option>
+        <option value="positivity">Positivity</option>
+        <option value="self-love">Self Love</option>
+      </select>
+      <button onclick="loadQuote()" class="btn btn-tinted">New Quote</button>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="modal-overlay" id="moodModal">
+  <div class="modal-content">
+    <h3 id="modalTitle">For Your Mood...</h3>
+    <p id="modalMessage"></p>
+    <div class="modal-actions" id="modalActions"></div>
+    <button id="closeModal">Close</button>
+  </div>
+</div>
+
+<script>
+  async function loadQuote() {
+    const quoteText = document.getElementById("quoteText");
+    const category = document.getElementById("categorySelect").value;
+    const mood = "<%= mood || '' %>";
+    quoteText.innerText = "Loading...";
+    let url = '/daily-quote?';
+    if (category) {
+      url += `category=${category}`;
+    } else if (mood) {
+      url += `mood=${mood}`;
+    }
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      quoteText.innerText = data.quote || "No quote found!";
+    } catch (e) {
+      quoteText.innerText = "Error loading quote.";
+    }
+  }
+  loadQuote();
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('moodModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalActions = document.getElementById('modalActions');
+    const moodKits = {
+      'sad': { title: 'A Little Comfort Kit', message: 'It\'s okay to feel down. Here are a few things that might help lift your spirits.', actions: [{ text: '💬 Talk to Your AI Friend', href: '/chat' }, { text: '🧘 Try a Mindful Walk', href: '/exercise' }, { text: '📝 Write Down Your Thoughts', href: '/todo' }] },
+      'anxious': { title: 'Your Calm Down Kit', message: 'When things feel overwhelming, a small, focused action can make a big difference.', actions: [{ text: '😮‍💨 Do a Breathing Exercise', href: '/exercise' }, { text: '⏳ Set a 5-Min Focus Timer', href: '/pomodoro' }, { text: '🗣️ Vent to Your AI Friend', href: '/chat' }] },
+      'angry': { title: 'Your Cool Down Kit', message: 'Channel that energy in a positive way. Here are some options.', actions: [{ text: '😮‍💨 Try Box Breathing', href: '/exercise' }, { text: '💪 Log Your Steps', href: '/steps' }, { text: '🗣️ Let it Out with an AI Friend', href: '/chat' }] },
+      'happy': { title: 'Let\'s Keep the Good Vibe Going!', message: 'Awesome! Here are some ways to build on that positive energy.', actions: [{ text: '🏃‍♀️ Try an Energetic Workout', href: '/exercise' }, { text: '📌 Start a New Habit', href: '/habits' }, { text: '✅ Tackle Your To-Do List', href: '/todo' }] },
+      'excited': { title: 'Harness That Excitement!', message: 'That\'s great! Let\'s channel this energy into something productive.', actions: [{ text: '⚡ Do a Quick Workout Burst', href: '/exercise' }, { text: '🎯 Set a Goal in Your To-Do List', href: '/todo' }, { text: '🙌 Share the News with an AI Friend', href: '/chat' }] },
+      'calm': { title: 'Embrace the Calm', message: 'A calm mind is a powerful tool. Here are some ways to make the most of this peaceful state.', actions: [{ text: '🧘 Do a Gentle Stretch', href: '/exercise' }, { text: '⏳ Start a Focus Session', href: '/pomodoro' }, { text: '📝 Plan Your Day', href: '/todo' }] },
+      'neutral': { title: 'A Moment of Balance', message: 'A neutral mood is a great starting point. It\'s the perfect time to plan ahead or build a new routine.', actions: [{ text: '📝 Plan Your Day', href: '/todo' }, { text: '📌 Review Your Habits', href: '/habits' }, { text: '💬 Chat About Something New', href: '/chat' }] }
+    };
+    function showModal(mood) {
+      const kit = moodKits[mood];
+      if (!kit) return;
+      modalTitle.textContent = kit.title;
+      modalMessage.textContent = kit.message;
+      modalActions.innerHTML = '';
+      kit.actions.forEach(action => {
+        const link = document.createElement('a');
+        link.textContent = action.text;
+        link.href = action.href;
+        modalActions.appendChild(link);
+      });
+      modal.style.display = 'flex';
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const loggedMood = urlParams.get('mood_logged');
+    if (loggedMood) {
+      showModal(loggedMood);
+    }
+    closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+<%- include('partials/_footer') %>
