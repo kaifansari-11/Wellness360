@@ -1,23 +1,18 @@
-const mysql = require('mysql2'); // mysql2 use karna behtar hai
-require('dotenv').config();
+const mysql = require('mysql');
+require('dotenv').config(); // Good practice to have this here too
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: {
-        rejectUnauthorized: false // Cloud database ke liye ye line add karein
-    }
+    charset: 'utf8mb4',
+    dateStrings: true 
 });
 
 db.connect((err) => {
-    if (err) {
-        console.error('Connection failed:', err.message);
-        return;
-    }
-    console.log('Connected to Aiven Cloud Database!');
+    if (err) throw err;
+    console.log('DB Connected (models/db.js)');
 });
 
 module.exports = db;
