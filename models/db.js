@@ -1,18 +1,21 @@
 const mysql = require('mysql');
-require('dotenv').config(); // Good practice to have this here too
+require('dotenv').config();
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
+const db = mysql.createConnection(process.env.DATABASE_URL || {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    charset: 'utf8mb4',
-    dateStrings: true 
+    port: process.env.DB_PORT || 3306,
+    ssl: { rejectUnauthorized: true } // Cloud DBs usually require SSL
 });
 
 db.connect((err) => {
-    if (err) throw err;
-    console.log('DB Connected (models/db.js)');
+    if (err) {
+        console.error('❌ Error connecting to DB:', err);
+        return;
+    }
+    console.log('✅ DB Connected Successfully');
 });
 
 module.exports = db;
