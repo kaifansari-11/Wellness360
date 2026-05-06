@@ -23,17 +23,19 @@ Authentication: Express Session
 
 ## Getting Started
 To run this project locally, follow these steps:
-
+Step 1:
 Clone the repository:
 
-Bash
 
 git clone https://github.com/your-username/wellness360.git
+
+Step 2:
 Install dependencies:
 
-Bash
 
 npm install
+
+Step 3:
 Set up your environment variables:
 
 Create a file named .env in the root directory.
@@ -45,9 +47,10 @@ DB_USER=root
 DB_PASSWORD=your_db_password
 DB_NAME=wellness360
 SESSION_SECRET=a_strong_secret_key
+
+Step 4:
 Start the server:
 
-Bash
 
 npm start
 The application will be running at http://localhost:3000.
