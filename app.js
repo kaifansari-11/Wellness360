@@ -26,7 +26,7 @@ app.use(session({
     }
 }));
 
-//  Middleware: Make session data available to all templates
+// ✅ Middleware: Make session data available to all templates
 app.use((req, res, next) => {
     if (req.session.userId && !req.session.user) {
         req.session.user = {
@@ -55,7 +55,7 @@ const db = require('./models/db'); // Using the modular db connection
 // --- Scheduled Job (Cron) ---
 // Runs at midnight (00:00) every day.
 cron.schedule('0 0 * * *', () => {
-    console.log(" Running daily habit reset job...");
+    console.log("⏰ Running daily habit reset job...");
 
     // Get yesterday's date in YYYY-MM-DD format
     const yesterday = new Date();
@@ -72,19 +72,19 @@ cron.schedule('0 0 * * *', () => {
 
     db.query(logSql, [yesterdayString, yesterdayString], (err, result) => {
         if (err) {
-            console.error(" Error logging completed habits:", err);
+            console.error("❌ Error logging completed habits:", err);
             return;
         }
 
         if (result.affectedRows > 0) {
-            console.log(` Logged ${result.affectedRows} completed habits for ${yesterdayString}`);
+            console.log(`✅ Logged ${result.affectedRows} completed habits for ${yesterdayString}`);
         }
 
         // Step 2: Reset ALL habits to 'pending' user-wise
         const getUsers = `SELECT id FROM users`;
         db.query(getUsers, (errUsers, users) => {
             if (errUsers) {
-                console.error(" Error fetching users:", errUsers);
+                console.error("❌ Error fetching users:", errUsers);
                 return;
             }
 
@@ -92,9 +92,9 @@ cron.schedule('0 0 * * *', () => {
                 const resetSql = `UPDATE habits SET status='pending', status_date=NULL WHERE user_id=?`;
                 db.query(resetSql, [user.id], (err2, result2) => {
                     if (err2) {
-                        console.error(` Error resetting habits for user ${user.id}:`, err2);
+                        console.error(`❌ Error resetting habits for user ${user.id}:`, err2);
                     } else {
-                        console.log(` Reset ${result2.affectedRows} habits for user ${user.id}`);
+                        console.log(`✅ Reset ${result2.affectedRows} habits for user ${user.id}`);
                     }
                 });
             });
@@ -126,4 +126,4 @@ app.use('/', require('./routes/chatbot'));
 
 // --- Server Startup ---
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(` Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
