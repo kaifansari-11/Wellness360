@@ -47,16 +47,12 @@
         <td><%= u.status || 'active' %></td>
         <td>
           <div class="action-buttons">
-            <% if (u.email !== 'admin@wellness360.com') { %>
-              <form action="/admin/toggle-ban/<%= u.id %>" method="POST" onsubmit="return confirm('Are you sure?')">
-                <button type="submit" class="btn btn-tinted"><%= u.status === 'banned' ? 'Unban' : 'Ban' %></button>
-              </form>
-              <form action="/admin/delete/<%= u.id %>" method="POST" onsubmit="return confirm('DELETE this user permanently?')">
-                <button type="submit" class="btn">Delete</button>
-              </form>
-            <% } else { %>
-              <span style="color: var(--text-light); font-style: italic;">Protected (Admin)</span>
-            <% } %>
+            <form action="/admin/toggle-ban/<%= u.id %>" method="POST" onsubmit="return confirm('Are you sure?')">
+              <button type="submit" class="btn btn-tinted"><%= u.status === 'banned' ? 'Unban' : 'Ban' %></button>
+            </form>
+            <form action="/admin/delete/<%= u.id %>" method="POST" onsubmit="return confirm('DELETE this user permanently?')">
+              <button type="submit" class="btn">Delete</button>
+            </form>
           </div>
         </td>
       </tr>
@@ -72,6 +68,7 @@
 </div>
 
 <script>
+  // Chart.js script for the activity chart
   new Chart(document.getElementById('activityChart'), {
     type: 'bar',
     data: {
@@ -86,7 +83,7 @@
         ],
         borderColor: [
             '#fbc02d',
-            #388e3c',
+            '#388e3c',
             '#d32f2f'
         ],
         borderWidth: 2,
@@ -101,5 +98,6 @@
     }
   });
 </script>
+
 
 <%- include('partials/_footer') %>

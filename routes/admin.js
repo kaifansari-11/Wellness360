@@ -4,7 +4,8 @@ const db = require("../models/db");
 
 const ADMIN_EMAIL = "admin@wellness360.com";
 
-// Middleware to check if user is admin
+// ✅ CORRECT, SINGLE isAdmin MIDDLEWARE
+// This version correctly checks the user's role from the session.
 function isAdmin(req, res, next) {
   if (req.session.user && req.session.user.role === 'admin') {
     next();
@@ -13,11 +14,11 @@ function isAdmin(req, res, next) {
   }
 }
 
+// ✅ CORRECT, SINGLE Admin Dashboard Route
 router.get("/admin", isAdmin, (req, res) => {
   const search = req.query.search || "";
   const searchQuery = `%${search}%`;
 
-  // Admin ko list se bahar nikalne ke liye hamesha email check karein
   const sqlUsers = `SELECT id, name, email, DATE_FORMAT(created_at, '%Y-%m-%d') AS signup_date, status FROM users WHERE email != ? AND (name LIKE ? OR email LIKE ?)`;
   const sqlStats = `SELECT (SELECT COUNT(*) FROM users WHERE email != '${ADMIN_EMAIL}') AS total_users, (SELECT COUNT(*) FROM moods) AS total_moods, (SELECT COUNT(*) FROM habits WHERE status='done') AS total_habits_done, (SELECT COUNT(*) FROM exercise_logs) AS total_exercises`;
 
@@ -27,7 +28,7 @@ router.get("/admin", isAdmin, (req, res) => {
       if (err2) throw err2;
 
       res.render("admin", {
-        user: req.session.user, // Current logged in user
+        user: req.session.user,
         stats: stats[0] || {},
         users: users || [],
         search: search,
@@ -36,6 +37,7 @@ router.get("/admin", isAdmin, (req, res) => {
   });
 });
 
+// ✅ NEW Route for Managing Quotes
 router.get('/admin/quotes', isAdmin, (req, res) => {
   const sql = `SELECT * FROM motivational_quotes ORDER BY id DESC`;
   db.query(sql, (err, quotes) => {
@@ -47,10 +49,10 @@ router.get('/admin/quotes', isAdmin, (req, res) => {
   });
 });
 
+
 // --- User Management POST Routes ---
 
 router.post("/admin/delete/:id", isAdmin, (req, res) => {
-  // Extra security: Admin apni ID delete na kar sake backend se bhi
   db.query("DELETE FROM users WHERE id=? AND email != ?", [req.params.id, ADMIN_EMAIL], (err) => {
     if (err) throw err;
     res.redirect("/admin");
@@ -58,10 +60,9 @@ router.post("/admin/delete/:id", isAdmin, (req, res) => {
 });
 
 router.post("/admin/toggle-ban/:id", isAdmin, (req, res) => {
-  // Check if target is not the admin itself
-  db.query("SELECT status, email FROM users WHERE id=?", [req.params.id], (err, rows) => {
+  db.query("SELECT status FROM users WHERE id=?", [req.params.id], (err, rows) => {
     if (err) throw err;
-    if (rows.length > 0 && rows[0].email !== ADMIN_EMAIL) {
+    if (rows.length > 0) {
       const newStatus = rows[0].status === "banned" ? "active" : "banned";
       db.query("UPDATE users SET status=? WHERE id=?", [newStatus, req.params.id], (err2) => {
         if (err2) throw err2;
@@ -72,6 +73,7 @@ router.post("/admin/toggle-ban/:id", isAdmin, (req, res) => {
     }
   });
 });
+
 
 // --- Quote Management POST Routes ---
 
@@ -84,6 +86,7 @@ router.post("/admin/add-quote", isAdmin, (req, res) => {
     [quote, mood, category],
     (err) => {
       if (err) throw err;
+      // ✅ Improved Redirect
       res.redirect("/admin/quotes");
     }
   );
@@ -101,6 +104,7 @@ router.post("/admin/edit-quote/:id", isAdmin, (req, res) => {
 router.post("/admin/delete-quote/:id", isAdmin, (req, res) => {
   db.query("DELETE FROM motivational_quotes WHERE id=?", [req.params.id], (err) => {
     if (err) throw err;
+    // ✅ Improved Redirect
     res.redirect("/admin/quotes");
   });
 });
