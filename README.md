@@ -1,56 +1,259 @@
-Wellness360: Personal Wellness Dashboard
-Wellness360 is a full-stack web application designed to be an all-in-one dashboard for tracking and improving personal well-being and productivity. Users can create a secure account to monitor their daily habits, manage tasks, and log their moods, helping them build consistency and gain insights into their daily lives.
+# Wellness360
+
+A full-stack personal wellness dashboard designed to help users improve their physical, mental, and emotional well-being through habit tracking, mood monitoring, productivity tools, and AI-powered wellness support.
+
+**Live Demo:** https://wellness360-4.onrender.com
+
+---
+
+## Overview
+
+Wellness360 simplifies the process of maintaining a healthy lifestyle by providing a centralized platform for tracking habits, moods, daily activities, and productivity. The application combines wellness tracking with intelligent recommendations, enabling users to build positive routines, monitor emotional patterns, and stay focused on personal goals.
+
+---
 
 ## Features
-📈 Dynamic Habit Tracker: Add, complete, and delete daily habits. Progress is visualized on a 7-day chart, and streaks are calculated to encourage consistency.
 
-😊 Mood Journal: Log daily moods, which are then plotted on a historical graph to help users identify emotional patterns over time.
+### Role-Based Authentication
 
-✅ Task Management: A simple and effective to-do list for managing daily responsibilities.
+* Secure user registration and login
+* Separate dashboards for Administrators and Standard Users
+* Password encryption using bcrypt
+* Session-based authentication and authorization
 
-⏲️ Productivity Tools: Includes a Pomodoro timer to help with focus management.
+### Admin Dashboard
 
-🔒 Secure User Authentication: Features a complete session-based authentication system for personalized user accounts.
+* Overview of platform statistics
+* User management interface
+* Ban, unban, and delete user accounts
+* Motivational quote management
+* User activity analytics and charts
+
+### User Dashboard
+
+* Personalized wellness overview
+* Daily step tracking
+* Dynamic motivational quotes
+* Mood-aware wellness recommendations
+
+### Habit Tracking
+
+* Create and manage daily habits
+* Automatic streak calculations
+* 7-day progress visualization
+* 30-day habit performance reports
+
+### Task Management
+
+* Interactive to-do list
+* Daily task organization
+* Completion tracking
+
+### Mood Journal & Analytics
+
+* Record daily moods
+* Historical mood tracking
+* 7-day mood trend charts
+* 30-day mood distribution analytics
+
+### Health & Productivity Tools
+
+* Pomodoro focus timer
+* Mood-based exercise recommendations
+* Workout completion tracking
+* Step goal monitoring and history
+
+### AI Wellness Companion
+
+* Powered by Groq (Llama 3.1 8B)
+* Conversational wellness assistant
+* Mood-aware responses
+* Personalized wellness guidance
+
+---
 
 ## Technology Stack
-Backend: Node.js, Express.js
 
-Frontend: EJS (Embedded JavaScript) for server-side rendering, Chart.js for data visualization.
+| Layer          | Technology                    |
+| -------------- | ----------------------------- |
+| Backend        | Node.js, Express.js           |
+| Frontend       | EJS, HTML5, CSS3, Chart.js    |
+| Database       | TiDB Cloud (MySQL-Compatible) |
+| Authentication | Express Session, bcrypt       |
+| AI Integration | Groq SDK                      |
+| Deployment     | Render                        |
 
-Database: MySQL
+---
 
-Authentication: Express Session
+## Installation and Setup
 
-## Getting Started
-To run this project locally, follow these steps:
-Step 1:
-Clone the repository:
+### Prerequisites
 
+* Node.js (v18 or higher)
+* TiDB Cloud Account
+* Groq API Account
 
-git clone https://github.com/your-username/wellness360.git
+### Installation
 
-Step 2:
-Install dependencies:
+```bash
+# Clone the repository
+git clone https://github.com/kaifansari-11/wellness360.git
 
+# Navigate to the project directory
+cd wellness360
 
+# Install dependencies
 npm install
 
-Step 3:
-Set up your environment variables:
+# Create environment configuration
+cp .env.example .env
 
-Create a file named .env in the root directory.
+# Configure environment variables
+# Add TiDB credentials, session secret, and Groq API key
 
-Add your database credentials and a session secret:
+# Run the database schema in TiDB Cloud
+# Execute db/schema.sql using the TiDB SQL Editor
 
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_db_password
-DB_NAME=wellness360
-SESSION_SECRET=a_strong_secret_key
+# Seed the Admin account
+node seedAdmin.js
 
-Step 4:
-Start the server:
+# Start the development server
+npm run dev
+```
 
+The application will be available at:
 
-npm start
-The application will be running at http://localhost:3000.
+```text
+http://localhost:3000
+```
+
+---
+
+## Database Configuration
+
+1. Create a Serverless Cluster in TiDB Cloud.
+
+2. Open the **Connect** section and obtain:
+
+   * Host
+   * Port
+   * Username
+   * Password
+
+3. Open the **SQL Editor** and execute the contents of `db/schema.sql`.
+
+4. Add the database credentials to your `.env` file.
+
+---
+
+## Application Routes
+
+| Method    | Route           | Description              |
+| --------- | --------------- | ------------------------ |
+| GET       | `/`             | Landing Page             |
+| GET, POST | `/login`        | User and Admin Login     |
+| GET, POST | `/signup`       | User Registration        |
+| GET       | `/dashboard`    | Main User Dashboard      |
+| GET       | `/admin`        | Administrative Dashboard |
+| GET, POST | `/habits`       | Habit Tracking           |
+| GET, POST | `/todo`         | Task Management          |
+| GET, POST | `/mood`         | Mood Logging             |
+| GET       | `/mood-history` | Mood Analytics           |
+| GET, POST | `/exercise`     | Exercise Tracking        |
+| GET, POST | `/steps`        | Step Tracking            |
+| GET       | `/pomodoro`     | Focus Timer              |
+| GET, POST | `/chat`         | AI Wellness Companion    |
+| GET, POST | `/profile`      | User Profile Management  |
+
+---
+
+## Deployment
+
+### Render
+
+1. Push the repository to GitHub.
+2. Create a new Web Service on Render.
+3. Connect the GitHub repository.
+4. Configure the service:
+
+```text
+Build Command: npm install
+Start Command: node app.js
+```
+
+5. Add all required environment variables.
+6. Deploy the application.
+
+---
+
+## Project Structure
+
+```text
+wellness360/
+├── models/
+│   └── db.js
+│
+├── routes/
+│   ├── admin.js
+│   ├── auth.js
+│   ├── chatbot.js
+│   ├── exercise.js
+│   ├── habit.js
+│   ├── mood.js
+│   ├── moodchart.js
+│   ├── pomodoro.js
+│   ├── profile.js
+│   ├── quotes.js
+│   ├── steps.js
+│   └── todo.js
+│
+├── views/
+│   ├── partials/
+│   │   ├── _footer.ejs
+│   │   ├── _header.ejs
+│   │   └── _sidebar.ejs
+│   │
+│   ├── admin.ejs
+│   ├── chat.ejs
+│   ├── dashboard.ejs
+│   ├── editprofile.ejs
+│   ├── exercise.ejs
+│   ├── habit-progress.ejs
+│   ├── habits.ejs
+│   ├── landing.ejs
+│   ├── login.ejs
+│   ├── mood.ejs
+│   ├── moodhistory.ejs
+│   ├── pomodoro.ejs
+│   ├── profile.ejs
+│   ├── signup.ejs
+│   └── todo.ejs
+│
+├── public/
+│   ├── css/
+│   │   ├── auth.css
+│   │   ├── main.css
+│   │   ├── mobile.css
+│   │   └── style.css
+│   └── uploads/
+│
+├── app.js
+├── seedAdmin.js
+└── package.json
+```
+
+---
+
+## Author
+
+**Kaif Ansari**
+
+Portfolio: https://kaifansari-dev.netlify.app
+
+GitHub: https://github.com/kaifansari-11
+
+---
+
+## License
+
+This project is intended for educational, portfolio, and learning purposes.
