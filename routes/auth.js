@@ -41,7 +41,9 @@ router.post('/login', (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.send('Invalid email or password');
 
-    const userRole = (user.email === "admin@wellness360.com") ? 'admin' : 'user';
+    // ✅ Grab the admin email from the .env file dynamically
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const userRole = (user.email === adminEmail) ? 'admin' : 'user';
 
     // This block correctly saves ALL necessary user data, including the role
     req.session.userId = user.id;
@@ -50,9 +52,9 @@ router.post('/login', (req, res) => {
       name: user.name, 
       email: user.email, 
       profile_pic: user.profile_pic,
-      role: userRole // ✅ This was the missing piece
+      role: userRole 
     };
-    req.session.role = userRole; // Keep this for any old code that might use it
+    req.session.role = userRole; 
 
     // Fetch initial mood and steps
     const today = new Date().toISOString().split('T')[0];

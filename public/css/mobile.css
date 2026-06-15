@@ -1,0 +1,325 @@
+/* ============================================================
+   Wellness360 — Mobile Responsive Stylesheet
+   Add this AFTER main.css and auth.css in _header.ejs
+   ============================================================ */
+
+/* ── Hamburger button (hidden on desktop) ── */
+.hamburger-btn {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 300;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+  transition: background 0.3s ease;
+}
+
+/* Overlay behind the open drawer */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* ============================================================
+   MOBILE BREAKPOINT — everything ≤ 768px
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* ── Show hamburger ── */
+  .hamburger-btn {
+    display: flex;
+  }
+
+  /* ── App container: single column, no sidebar column ── */
+  .app-container {
+    display: block !important;
+    grid-template-columns: unset !important;
+  }
+
+  /* ── Sidebar becomes a fixed off-canvas drawer ── */
+  .sidebar {
+    position: fixed !important;
+    top: 0;
+    left: -280px;       /* hidden by default */
+    width: 260px !important;
+    height: 100vh;
+    z-index: 250;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    padding: 80px 15px 25px;
+    border-right: 1px solid var(--border-color);
+    box-shadow: 4px 0 20px rgba(0,0,0,0.12);
+    transition: left 0.32s cubic-bezier(0.4,0,0.2,1) !important;
+    background-color: var(--sidebar-bg);
+  }
+
+  /* Open state toggled by JS */
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* Always show text in the drawer (no hover needed) */
+  .sidebar .sidebar-header h3,
+  .sidebar .sidebar-nav li a .link-text {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .sidebar .sidebar-header .profile-pic {
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  /* ── Main content: full width, top padding for hamburger ── */
+  .main-content {
+    grid-column: unset !important;
+    padding: 70px 18px 30px !important;
+    min-height: 100vh;
+  }
+
+  /* ── Stats grid: 2 col max on mobile ── */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+  /* ── Dashboard grid: single column ── */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Exercise grid: single column ── */
+  .exercise-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Admin table: allow horizontal scroll ── */
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 14px;
+  }
+
+  /* ── Admin action buttons: wrap ── */
+  .admin-table .action-buttons {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* ── Progress ring: smaller on mobile ── */
+  .progress-ring {
+    width: 120px !important;
+    height: 120px !important;
+  }
+  .progress-ring-text {
+    font-size: 22px !important;
+  }
+
+  /* ── Habit list items: wrap on small screens ── */
+  .habit-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .habit-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* ── Pomodoro clock: smaller ── */
+  .pomodoro-clock {
+    font-size: 56px !important;
+  }
+
+  /* ── Timer clock on exercise page ── */
+  .timer-clock {
+    font-size: 36px !important;
+  }
+
+  /* ── Chat window: full height ── */
+  .chat-window {
+    height: calc(100vh - 130px) !important;
+  }
+
+  /* ── Mood history charts: single column ── */
+  .stats-grid canvas {
+    max-height: 260px;
+  }
+
+  /* ── Form inputs full width ── */
+  .form-group input,
+  .form-group select,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  select {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  /* ── Buttons: comfortable tap targets ── */
+  .btn {
+    padding: 11px 18px;
+    font-size: 15px;
+  }
+
+  /* ── Profile header: stack vertically ── */
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  /* ── Todo / habits inline forms: wrap ── */
+  .card > form[style*="flex"] {
+    flex-wrap: wrap !important;
+  }
+
+  /* ── Habit add form ── */
+  .card form[action="/habits/add"] {
+    flex-wrap: wrap;
+  }
+  .card form[action="/habits/add"] input {
+    min-width: 0;
+  }
+
+  /* ── Chart containers: shorter on mobile ── */
+  .chart-container-lg {
+    height: 280px !important;
+  }
+  .chart-container-sm {
+    height: 200px !important;
+  }
+
+  /* ── Steps form in dashboard ── */
+  .dashboard-grid .card form {
+    margin-top: 12px;
+  }
+
+  /* ── H1 sizing ── */
+  h1 {
+    font-size: 22px !important;
+  }
+
+  /* ── Timer input group ── */
+  .timer-input-group {
+    max-width: 100% !important;
+  }
+
+  /* ── Exercise gif ── */
+  .exercise-gif {
+    max-height: 220px !important;
+  }
+
+  /* ── Quote card select+button: wrap nicely ── */
+  #categorySelect {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  h1 + p {
+    margin-top: 5px !important; /* Overrides the inline -10px */
+    margin-bottom: 20px !important;
+  }
+
+  .form-group select, 
+  .form-group input {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+
+/* ============================================================
+   AUTH PAGES (Landing / Login / Signup) — mobile
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* Landing hero: single column */
+  .hero-container {
+    grid-template-columns: 1fr !important;
+    padding: 36px 24px !important;
+    gap: 30px;
+    text-align: center;
+  }
+
+  .hero-text h1 {
+    font-size: 30px !important;
+  }
+
+  .hero-image {
+    order: -1; /* image on top */
+  }
+
+  .hero-image img {
+    max-height: 200px;
+    width: auto;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    max-width: 280px;
+    margin-right: 0 !important;
+  }
+
+  /* Auth card */
+  .auth-card {
+    padding: 28px 22px !important;
+  }
+
+  .auth-container {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+}
+
+/* ============================================================
+   Very small phones (≤ 380px)
+   ============================================================ */
+@media (max-width: 380px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .main-content {
+    padding: 68px 12px 24px !important;
+  }
+
+  .hero-text h1 {
+    font-size: 24px !important;
+  }
+}

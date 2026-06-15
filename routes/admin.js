@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models/db");
 
-const ADMIN_EMAIL = "admin@wellness360.com";
+// ✅ Pull from .env instead of hardcoding
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 // ✅ CORRECT, SINGLE isAdmin MIDDLEWARE
 // This version correctly checks the user's role from the session.
@@ -13,6 +14,7 @@ function isAdmin(req, res, next) {
     res.redirect("/");
   }
 }
+
 
 // ✅ CORRECT, SINGLE Admin Dashboard Route
 router.get("/admin", isAdmin, (req, res) => {
