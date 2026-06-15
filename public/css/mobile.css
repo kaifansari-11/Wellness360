@@ -56,17 +56,26 @@
   }
 
   /* ── Sidebar becomes a fixed off-canvas drawer ── */
+ /* ── Sidebar becomes a fixed off-canvas drawer ── */
   .sidebar {
     position: fixed !important;
     top: 0;
     left: -280px;       /* hidden by default */
     width: 260px !important;
-    height: 100vh;
+    
+    /* 👇 CHANGED from 100vh to 100% */
+    height: 100% !important; 
     z-index: 250;
-    overflow-y: auto;
-    overflow-x: hidden;
+    
+    /* 👇 FORCED scrolling rules */
+    overflow-y: auto !important; 
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    
     white-space: normal;
-    padding: 80px 15px 25px;
+    /* 👇 INCREASED bottom padding so the logout button clears mobile nav bars */
+    padding: 80px 15px 40px !important; 
+    
     border-right: 1px solid var(--border-color);
     box-shadow: 4px 0 20px rgba(0,0,0,0.12);
     transition: left 0.32s cubic-bezier(0.4,0,0.2,1) !important;
