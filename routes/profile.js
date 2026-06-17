@@ -1,21 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/db');
-const bcrypt = require('bcrypt');
 const multer = require('multer');
-const fs = require('fs');
 
-// --- Multer Setup for File Uploads ---
-const uploadDir = 'public/uploads';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
+// --- Multer Setup for File Uploads (Vercel-Safe) ---
+// We use memory storage because Vercel's filesystem is read-only.
+const storage = multer.memoryStorage(); 
 const upload = multer({ storage: storage });
-
 
 // --- GET My Profile Page ---
 router.get('/profile', (req, res) => {
@@ -36,7 +27,6 @@ router.get('/profile', (req, res) => {
         const totalWorkouts = exerciseResult[0]?.total || 0;
         const badges = [];
         if (totalWorkouts >= 1) badges.push("🏅 First Workout");
-
         
         res.render('profile', {
           user: req.session.user,
@@ -50,35 +40,33 @@ router.get('/profile', (req, res) => {
   });
 });
 
-
 // --- GET Edit Profile Page ---
 router.get('/edit-profile', (req, res) => {
   if (!req.session.userId) return res.redirect('/login');
-
   
   res.render('editprofile', { 
     user: req.session.user
   });
 });
 
-
 // --- POST Update Profile Logic ---
 router.post('/edit-profile', upload.single('profile_pic'), (req, res) => {
   if (!req.session.userId) return res.redirect('/login');
 
   const { name } = req.body;
-  const profilePicPath = req.file ? '/uploads/' + req.file.filename : null;
   const newName = name || req.session.user.name;
+
+  // ⚠️ TEMPORARY VERCEL FIX: We are ignoring the file upload for now 
+  // because local disk storage does not work on Vercel. 
+  // In the future, you will integrate Cloudinary or AWS S3 here.
+  const profilePicPath = null; 
 
   const sql = `UPDATE users SET name=?, profile_pic=COALESCE(?, profile_pic) WHERE id=?`;
   db.query(sql, [newName, profilePicPath, req.session.userId], (err) => {
     if (err) throw err;
-
     
     req.session.user.name = newName;
-    if (profilePicPath) {
-      req.session.user.profile_pic = profilePicPath;
-    }
+    // req.session.user.profile_pic = profilePicPath; // Skipped for now
     
     res.redirect('/profile');
   });

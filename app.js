@@ -5,7 +5,6 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const cron = require('node-cron');
 
 // Initialize the Express app
 const app = express();
@@ -15,13 +14,26 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- Session Configuration ---
+// --- MySQL Database Connection ---
+// MUST BE LOADED BEFORE THE SESSION STORE
+const db = require('./models/db'); 
+
+// --- Session Configuration (Vercel-Ready) ---
+const MySQLStore = require('express-mysql-session')(session);
+const sessionStore = new MySQLStore({
+    clearExpired: true,
+    checkExpirationInterval: 900000, // Checks every 15 mins
+    expiration: 86400000, // Sessions expire after 1 day
+}, db);
+
 app.use(session({
+    key: 'wellness360_cookie',
     secret: process.env.SESSION_SECRET || 'a_strong_default_secret',
+    store: sessionStore,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // Prevents saving empty sessions
     cookie: {
-        secure: false, // Set to true if you're using HTTPS
+        secure: process.env.NODE_ENV === 'production', 
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     }
 }));
@@ -49,12 +61,14 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// --- MySQL Database Connection ---
-const db = require('./models/db'); // Using the modular db connection
+// --- Scheduled Job (Vercel Cron) ---
+// This is now correctly wrapped inside a route!
+app.get('/api/cron', (req, res) => {
+    // Security check to ensure only Vercel can trigger this route
+    if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+        return res.status(401).send('Unauthorized');
+    }
 
-// --- Scheduled Job (Cron) ---
-// Runs at midnight (00:00) every day.
-cron.schedule('0 0 * * *', () => {
     console.log("⏰ Running daily habit reset job...");
 
     // Get yesterday's date in YYYY-MM-DD format
@@ -73,7 +87,7 @@ cron.schedule('0 0 * * *', () => {
     db.query(logSql, [yesterdayString, yesterdayString], (err, result) => {
         if (err) {
             console.error("❌ Error logging completed habits:", err);
-            return;
+            return res.status(500).send("Database Error");
         }
 
         if (result.affectedRows > 0) {
@@ -85,7 +99,7 @@ cron.schedule('0 0 * * *', () => {
         db.query(getUsers, (errUsers, users) => {
             if (errUsers) {
                 console.error("❌ Error fetching users:", errUsers);
-                return;
+                return res.status(500).send("Database Error");
             }
 
             users.forEach(user => {
@@ -98,11 +112,11 @@ cron.schedule('0 0 * * *', () => {
                     }
                 });
             });
+            
+            // End the request successfully
+            res.status(200).send("Cron job executed successfully");
         });
-
     });
-}, {
-    timezone: "Asia/Kolkata"
 });
 
 // --- Route Definitions ---
@@ -125,5 +139,10 @@ app.use('/', require('./routes/quotes'));
 app.use('/', require('./routes/chatbot'));
 
 // --- Server Startup ---
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+}
+
+// Export the app for Vercel
+module.exports = app;
