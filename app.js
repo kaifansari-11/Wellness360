@@ -26,6 +26,9 @@ const sessionStore = new MySQLStore({
     expiration: 86400000, // Sessions expire after 1 day
 }, db);
 
+// ⚠️ THE FIX: Tell Express to trust Vercel's secure proxy
+app.set('trust proxy', 1);
+
 app.use(session({
     key: 'wellness360_cookie',
     secret: process.env.SESSION_SECRET || 'a_strong_default_secret',
@@ -33,7 +36,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false, // Prevents saving empty sessions
     cookie: {
-        secure: process.env.NODE_ENV === 'production', 
+        secure: process.env.NODE_ENV === 'production', // Requires trust proxy to work on Vercel
+        sameSite: 'lax', // Recommended for modern browsers
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     }
 }));
@@ -62,7 +66,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // --- Scheduled Job (Vercel Cron) ---
-// This is now correctly wrapped inside a route!
 app.get('/api/cron', (req, res) => {
     // Security check to ensure only Vercel can trigger this route
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
