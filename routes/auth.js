@@ -41,11 +41,11 @@ router.post('/login', (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.send('Invalid email or password');
 
-    // ✅ Grab the admin email from the .env file dynamically
+    // Grab the admin email from the .env file dynamically
     const adminEmail = process.env.ADMIN_EMAIL;
     const userRole = (user.email === adminEmail) ? 'admin' : 'user';
 
-    // This block correctly saves ALL necessary user data, including the role
+    // Set session data
     req.session.userId = user.id;
     req.session.user = { 
       id: user.id, 
@@ -59,6 +59,7 @@ router.post('/login', (req, res) => {
     // Fetch initial mood and steps
     const today = new Date().toISOString().split('T')[0];
     const moodSql = 'SELECT mood FROM moods WHERE user_id = ? ORDER BY created_at DESC LIMIT 1';
+    
     db.query(moodSql, [user.id], (moodErr, moodResults) => {
       if (moodErr) throw moodErr;
       req.session.mood = moodResults.length ? moodResults[0].mood.toLowerCase() : 'default';
@@ -68,12 +69,20 @@ router.post('/login', (req, res) => {
         if (stepsErr) throw stepsErr;
         req.session.todaySteps = stepsResults.length ? stepsResults[0].steps : 0;
 
-        // Finally, redirect based on role
-        if (req.session.role === 'admin') {
-          return res.redirect('/admin');
-        } else {
-          return res.redirect('/dashboard');
-        }
+        // ⚠️ THE VERCEL FIX: Explicitly save the session to the DB before redirecting!
+        req.session.save((saveErr) => {
+            if (saveErr) {
+                console.error("Session Save Error:", saveErr);
+                return res.send("Error saving session, please try logging in again.");
+            }
+            
+            // Finally, redirect based on role ONLY AFTER save is complete
+            if (req.session.role === 'admin') {
+              return res.redirect('/admin');
+            } else {
+              return res.redirect('/dashboard');
+            }
+        });
       });
     });
   });
