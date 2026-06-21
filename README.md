@@ -2,7 +2,7 @@
 
 A full-stack personal wellness dashboard designed to help users improve their physical, mental, and emotional well-being through habit tracking, mood monitoring, productivity tools, and AI-powered wellness support.
 
-**Live Demo:** https://wellness360-4.onrender.com
+**Live Demo:** https://wellness360-lilac.vercel.app
 
 ---
 
@@ -79,9 +79,9 @@ Wellness360 simplifies the process of maintaining a healthy lifestyle by providi
 | Backend        | Node.js, Express.js           |
 | Frontend       | EJS, HTML5, CSS3, Chart.js    |
 | Database       | TiDB Cloud (MySQL-Compatible) |
-| Authentication | Express Session, bcrypt       |
+| Authentication | Express MySQL Session, bcrypt |
 | AI Integration | Groq SDK                      |
-| Deployment     | Render                        |
+| Deployment     | Vercel                        |
 
 ---
 
@@ -132,57 +132,79 @@ http://localhost:3000
 ## Database Configuration
 
 1. Create a Serverless Cluster in TiDB Cloud.
-
 2. Open the **Connect** section and obtain:
 
    * Host
    * Port
    * Username
    * Password
-
-3. Open the **SQL Editor** and execute the contents of `db/schema.sql`.
-
+3. Open the SQL Editor and execute the contents of `db/schema.sql`.
 4. Add the database credentials to your `.env` file.
 
 ---
 
 ## Application Routes
 
-| Method    | Route           | Description              |
-| --------- | --------------- | ------------------------ |
-| GET       | `/`             | Landing Page             |
-| GET, POST | `/login`        | User and Admin Login     |
-| GET, POST | `/signup`       | User Registration        |
-| GET       | `/dashboard`    | Main User Dashboard      |
-| GET       | `/admin`        | Administrative Dashboard |
-| GET, POST | `/habits`       | Habit Tracking           |
-| GET, POST | `/todo`         | Task Management          |
-| GET, POST | `/mood`         | Mood Logging             |
-| GET       | `/mood-history` | Mood Analytics           |
-| GET, POST | `/exercise`     | Exercise Tracking        |
-| GET, POST | `/steps`        | Step Tracking            |
-| GET       | `/pomodoro`     | Focus Timer              |
-| GET, POST | `/chat`         | AI Wellness Companion    |
-| GET, POST | `/profile`      | User Profile Management  |
+| Method    | Route         | Description              |
+| --------- | ------------- | ------------------------ |
+| GET       | /             | Landing Page             |
+| GET, POST | /login        | User and Admin Login     |
+| GET, POST | /signup       | User Registration        |
+| GET       | /dashboard    | Main User Dashboard      |
+| GET       | /admin        | Administrative Dashboard |
+| GET, POST | /habits       | Habit Tracking           |
+| GET, POST | /todo         | Task Management          |
+| GET, POST | /mood         | Mood Logging             |
+| GET       | /mood-history | Mood Analytics           |
+| GET, POST | /exercise     | Exercise Tracking        |
+| GET, POST | /steps        | Step Tracking            |
+| GET       | /pomodoro     | Focus Timer              |
+| GET, POST | /chat         | AI Wellness Companion    |
+| GET, POST | /profile      | User Profile Management  |
 
 ---
 
 ## Deployment
 
-### Render
+### Vercel
 
-1. Push the repository to GitHub.
-2. Create a new Web Service on Render.
-3. Connect the GitHub repository.
-4. Configure the service:
+The application is optimized for Vercel's serverless environment, including a configured `vercel.json` for routing static files and triggering daily cron jobs.
+
+#### Deployment Steps
+
+1. Push your code repository to GitHub.
+2. Log in to your Vercel Dashboard and click **Add New → Project**.
+3. Import your connected GitHub repository.
+4. Under Build and Output Settings, leave all overrides turned OFF:
 
 ```text
-Build Command: npm install
-Start Command: node app.js
+Build Command: None
+Output Directory: N/A
+Install Command: npm install
 ```
 
-5. Add all required environment variables.
-6. Deploy the application.
+5. Add the following Environment Variables:
+
+```env
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+DB_PORT=
+
+SESSION_SECRET=
+
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+
+GROQ_API_KEY=
+
+CRON_SECRET=
+```
+
+6. Click **Deploy**.
+
+Vercel will automatically install dependencies, bind the routes, and launch your application.
 
 ---
 
@@ -238,6 +260,7 @@ wellness360/
 │   └── uploads/
 │
 ├── app.js
+├── vercel.json
 ├── seedAdmin.js
 └── package.json
 ```

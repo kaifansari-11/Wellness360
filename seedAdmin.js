@@ -10,7 +10,7 @@ const password = process.env.ADMIN_PASSWORD;
 
 // Safety check
 if (!email || !password) {
-  console.error("❌ ERROR: ADMIN_EMAIL or ADMIN_PASSWORD is not set in your .env file.");
+  console.error("ERROR: ADMIN_EMAIL or ADMIN_PASSWORD is not set in your .env file.");
   process.exit(1);
 }
 
@@ -23,7 +23,7 @@ async function createAdmin() {
                  
     db.query(sql, ['Admin', email, hashedPwd], (err, result) => {
       if (err) throw err;
-      console.log(`✅ Admin user created/updated successfully for: ${email}`);
+      console.log(`Admin user created/updated successfully for: ${email}`);
       process.exit();
     });
   } catch (e) {

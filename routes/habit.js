@@ -196,7 +196,7 @@ router.get('/habit-progress', async (req, res) => {
 });
 
 
-// ===== POST Routes (Unchanged but still good practice) =====
+// ===== POST Routes =====
 router.post('/habits/add', async (req, res) => {
     if (!req.session.userId) return res.redirect('/login');
     const { habit_name } = req.body;

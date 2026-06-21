@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require('../models/db');
 const multer = require('multer');
 
-// --- Multer Setup for File Uploads (Vercel-Safe) ---
 // We use memory storage because Vercel's filesystem is read-only.
 const storage = multer.memoryStorage(); 
 const upload = multer({ storage: storage });
@@ -55,10 +54,6 @@ router.post('/edit-profile', upload.single('profile_pic'), (req, res) => {
 
   const { name } = req.body;
   const newName = name || req.session.user.name;
-
-  // ⚠️ TEMPORARY VERCEL FIX: We are ignoring the file upload for now 
-  // because local disk storage does not work on Vercel. 
-  // In the future, you will integrate Cloudinary or AWS S3 here.
   const profilePicPath = null; 
 
   const sql = `UPDATE users SET name=?, profile_pic=COALESCE(?, profile_pic) WHERE id=?`;

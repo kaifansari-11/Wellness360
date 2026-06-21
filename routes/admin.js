@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../models/db");
-
-// ✅ Pull from .env instead of hardcoding
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
-// ✅ CORRECT, SINGLE isAdmin MIDDLEWARE
-// This version correctly checks the user's role from the session.
+
 function isAdmin(req, res, next) {
   if (req.session.user && req.session.user.role === 'admin') {
     next();
@@ -16,7 +13,6 @@ function isAdmin(req, res, next) {
 }
 
 
-// ✅ CORRECT, SINGLE Admin Dashboard Route
 router.get("/admin", isAdmin, (req, res) => {
   const search = req.query.search || "";
   const searchQuery = `%${search}%`;
@@ -39,7 +35,6 @@ router.get("/admin", isAdmin, (req, res) => {
   });
 });
 
-// ✅ NEW Route for Managing Quotes
 router.get('/admin/quotes', isAdmin, (req, res) => {
   const sql = `SELECT * FROM motivational_quotes ORDER BY id DESC`;
   db.query(sql, (err, quotes) => {
@@ -88,7 +83,6 @@ router.post("/admin/add-quote", isAdmin, (req, res) => {
     [quote, mood, category],
     (err) => {
       if (err) throw err;
-      // ✅ Improved Redirect
       res.redirect("/admin/quotes");
     }
   );
@@ -106,7 +100,6 @@ router.post("/admin/edit-quote/:id", isAdmin, (req, res) => {
 router.post("/admin/delete-quote/:id", isAdmin, (req, res) => {
   db.query("DELETE FROM motivational_quotes WHERE id=?", [req.params.id], (err) => {
     if (err) throw err;
-    // ✅ Improved Redirect
     res.redirect("/admin/quotes");
   });
 });

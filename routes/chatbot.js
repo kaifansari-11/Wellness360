@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const Groq = require('groq-sdk');
 
-// GET /chat page - This part remains the same
+// GET /chat page
 router.get('/chat', (req, res) => {
   if (!req.session.userId) return res.redirect('/login');
 
@@ -25,7 +25,6 @@ router.get('/chat', (req, res) => {
 });
 
 
-// ✅ UPDATED POST /chat to use Groq and the Llama 3 model
 router.post('/chat', async (req, res) => {
   if (!req.session.userId) return res.status(401).json({ error: 'Not authenticated' });
 
@@ -56,7 +55,6 @@ router.post('/chat', async (req, res) => {
     const groq = new Groq({ apiKey });
 
     const chatCompletion = await groq.chat.completions.create({
-      // The messages array is the standard way to send a conversation
       messages: [
         {
           role: "system",
@@ -67,7 +65,6 @@ router.post('/chat', async (req, res) => {
           content: userMessage,
         },
       ],
-      // This is a popular, high-performance model. It's very fast on Groq.
       model: "llama-3.1-8b-instant",
     });
 

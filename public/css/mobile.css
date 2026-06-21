@@ -1,9 +1,5 @@
-/* ============================================================
-   Wellness360 — Mobile Responsive Stylesheet
-   Add this AFTER main.css and auth.css in _header.ejs
-   ============================================================ */
 
-/* ── Hamburger button (hidden on desktop) ── */
+/* ── Hamburger button ── */
 .hamburger-btn {
   display: none;
   position: fixed;
@@ -39,9 +35,7 @@
   opacity: 1;
 }
 
-/* ============================================================
-   MOBILE BREAKPOINT — everything ≤ 768px
-   ============================================================ */
+
 @media (max-width: 768px) {
 
   /* ── Show hamburger ── */
@@ -56,26 +50,18 @@
   }
 
   /* ── Sidebar becomes a fixed off-canvas drawer ── */
- /* ── Sidebar becomes a fixed off-canvas drawer ── */
   .sidebar {
     position: fixed !important;
     top: 0;
-    left: -280px;       /* hidden by default */
+    left: -280px;      
     width: 260px !important;
-    
-    /* 👇 CHANGED from 100vh to 100% */
     height: 100% !important; 
     z-index: 250;
-    
-    /* 👇 FORCED scrolling rules */
     overflow-y: auto !important; 
     overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-    
+    -webkit-overflow-scrolling: touch; 
     white-space: normal;
-    /* 👇 INCREASED bottom padding so the logout button clears mobile nav bars */
-    padding: 80px 15px 40px !important; 
-    
+    padding: 80px 15px 40px !important;  
     border-right: 1px solid var(--border-color);
     box-shadow: 4px 0 20px rgba(0,0,0,0.12);
     transition: left 0.32s cubic-bezier(0.4,0,0.2,1) !important;
@@ -183,7 +169,7 @@
   input[type="password"],
   input[type="number"],
   select {
-    font-size: 16px; /* prevents iOS zoom on focus */
+    font-size: 16px;
   }
 
   /* ── Buttons: comfortable tap targets ── */
@@ -251,7 +237,7 @@
   }
 
   h1 + p {
-    margin-top: 5px !important; /* Overrides the inline -10px */
+    margin-top: 5px !important;
     margin-bottom: 20px !important;
   }
 
@@ -264,9 +250,6 @@
 }
 
 
-/* ============================================================
-   AUTH PAGES (Landing / Login / Signup) — mobile
-   ============================================================ */
 @media (max-width: 768px) {
 
   /* Landing hero: single column */
@@ -282,7 +265,7 @@
   }
 
   .hero-image {
-    order: -1; /* image on top */
+    order: -1;
   }
 
   .hero-image img {
@@ -316,9 +299,6 @@
   }
 }
 
-/* ============================================================
-   Very small phones (≤ 380px)
-   ============================================================ */
 @media (max-width: 380px) {
   .stats-grid {
     grid-template-columns: 1fr !important;

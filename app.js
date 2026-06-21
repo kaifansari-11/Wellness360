@@ -15,18 +15,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- MySQL Database Connection ---
-// MUST BE LOADED BEFORE THE SESSION STORE
 const db = require('./models/db'); 
 
-// --- Session Configuration (Vercel-Ready) ---
+// --- Session Configuration ---
 const MySQLStore = require('express-mysql-session')(session);
 const sessionStore = new MySQLStore({
     clearExpired: true,
-    checkExpirationInterval: 900000, // Checks every 15 mins
-    expiration: 86400000, // Sessions expire after 1 day
+    checkExpirationInterval: 900000,
+    expiration: 86400000,
 }, db);
 
-// ⚠️ THE FIX: Tell Express to trust Vercel's secure proxy
 app.set('trust proxy', 1);
 
 app.use(session({
@@ -34,15 +32,15 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'a_strong_default_secret',
     store: sessionStore,
     resave: false,
-    saveUninitialized: false, // Prevents saving empty sessions
+    saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // Requires trust proxy to work on Vercel
-        sameSite: 'lax', // Recommended for modern browsers
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000 
     }
 }));
 
-// ✅ Middleware: Make session data available to all templates
+// Middleware: Make session data available to all templates
 app.use((req, res, next) => {
     if (req.session.userId && !req.session.user) {
         req.session.user = {
@@ -65,14 +63,13 @@ app.use((req, res, next) => {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// --- Scheduled Job (Vercel Cron) ---
+// --- Scheduled Job ---
 app.get('/api/cron', (req, res) => {
-    // Security check to ensure only Vercel can trigger this route
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
         return res.status(401).send('Unauthorized');
     }
 
-    console.log("⏰ Running daily habit reset job...");
+    console.log("Running daily habit reset job...");
 
     // Get yesterday's date in YYYY-MM-DD format
     const yesterday = new Date();
@@ -89,19 +86,19 @@ app.get('/api/cron', (req, res) => {
 
     db.query(logSql, [yesterdayString, yesterdayString], (err, result) => {
         if (err) {
-            console.error("❌ Error logging completed habits:", err);
+            console.error("Error logging completed habits:", err);
             return res.status(500).send("Database Error");
         }
 
         if (result.affectedRows > 0) {
-            console.log(`✅ Logged ${result.affectedRows} completed habits for ${yesterdayString}`);
+            console.log(`Logged ${result.affectedRows} completed habits for ${yesterdayString}`);
         }
 
         // Step 2: Reset ALL habits to 'pending' user-wise
         const getUsers = `SELECT id FROM users`;
         db.query(getUsers, (errUsers, users) => {
             if (errUsers) {
-                console.error("❌ Error fetching users:", errUsers);
+                console.error("Error fetching users:", errUsers);
                 return res.status(500).send("Database Error");
             }
 
@@ -109,14 +106,12 @@ app.get('/api/cron', (req, res) => {
                 const resetSql = `UPDATE habits SET status='pending', status_date=NULL WHERE user_id=?`;
                 db.query(resetSql, [user.id], (err2, result2) => {
                     if (err2) {
-                        console.error(`❌ Error resetting habits for user ${user.id}:`, err2);
+                        console.error(`Error resetting habits for user ${user.id}:`, err2);
                     } else {
-                        console.log(`✅ Reset ${result2.affectedRows} habits for user ${user.id}`);
+                        console.log(`Reset ${result2.affectedRows} habits for user ${user.id}`);
                     }
                 });
             });
-            
-            // End the request successfully
             res.status(200).send("Cron job executed successfully");
         });
     });
@@ -144,8 +139,7 @@ app.use('/', require('./routes/chatbot'));
 // --- Server Startup ---
 if (process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 }
 
-// Export the app for Vercel
 module.exports = app;

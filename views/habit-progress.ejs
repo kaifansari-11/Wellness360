@@ -29,7 +29,7 @@
 
     // Gradient for completed habits fill
     const gradient = progressChartCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, primaryColor + '99'); // Semi-transparent top
+    gradient.addColorStop(0, primaryColor + '99');
     gradient.addColorStop(1, primaryBgTint || '#f5f5f5');
 
     new Chart(progressChartCtx, {

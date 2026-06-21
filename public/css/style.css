@@ -1,4 +1,4 @@
-/* public/css/style.css */
+
 body {
   background-color: #f2f2f2;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -41,7 +41,7 @@ button:hover {
 }
 
 .password-wrapper input {
-  padding-right: 10px; /* no extra space needed now */
+  padding-right: 10px; 
 }
 
 .password-wrapper i {
@@ -57,49 +57,45 @@ body.default {
 }
 
 body.happy {
-  background-color: #fff9c4; /* light yellow */
+  background-color: #fff9c4; 
 }
 
 body.sad {
-  background-color: #bbdefb; /* light blue */
+  background-color: #bbdefb; 
 }
 
 body.angry {
-  background-color: #ffcdd2; /* light red */
+  background-color: #ffcdd2; 
 }
 
 body.calm {
-  background-color: #c8e6c9; /* light green */
+  background-color: #c8e6c9;
 }
 
 body.anxious {
-  background-color: #d1c4e9; /* purple-ish */
+  background-color: #d1c4e9; 
 }
 
 body.neutral {
-  background-color: #eeeeee; /* light gray */
+  background-color: #eeeeee; 
 }
 
 body.excited {
-  background-color: #FFD580; /* light orange */
+  background-color: #FFD580; 
 }
-/* In public/css/style.css */
 
 .remember-wrapper {
-  text-align: left; /* Aligns the checkbox to the left of the form */
+  text-align: left;
   margin-top: 15px;
   margin-bottom: 15px;
-  margin-left: 5px; /* Aligns with other inputs */
+  margin-left: 5px;
 }
 
 .remember-wrapper input[type="checkbox"] {
-  /* Reset properties from the general 'input' rule */
   width: auto;
   display: inline-block;
-  
-  /* Style the checkbox */
-  margin-right: 8px; /* This creates a clean space after the checkbox */
-  vertical-align: middle; /* Aligns checkbox with the text */
+  margin-right: 8px; 
+  vertical-align: middle;
   transform: scale(1.1);
 }
 

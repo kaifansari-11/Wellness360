@@ -26,7 +26,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// --- ✅ FINAL, CORRECTED LOGIN LOGIC ---
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
   const sql = 'SELECT * FROM users WHERE email = ?';
@@ -69,14 +68,14 @@ router.post('/login', (req, res) => {
         if (stepsErr) throw stepsErr;
         req.session.todaySteps = stepsResults.length ? stepsResults[0].steps : 0;
 
-        // ⚠️ THE VERCEL FIX: Explicitly save the session to the DB before redirecting!
+        
         req.session.save((saveErr) => {
             if (saveErr) {
                 console.error("Session Save Error:", saveErr);
                 return res.send("Error saving session, please try logging in again.");
             }
             
-            // Finally, redirect based on role ONLY AFTER save is complete
+            
             if (req.session.role === 'admin') {
               return res.redirect('/admin');
             } else {
@@ -92,7 +91,6 @@ router.post('/login', (req, res) => {
 // --- Other Routes ---
 router.get('/dashboard', (req, res) => {
   if (!req.session.userId) return res.redirect('/login');
-  // Your dashboard logic...
   const today = new Date().toISOString().split('T')[0];
   const stepsSql = 'SELECT steps, goal FROM steps WHERE user_id = ? AND date = ?';
   db.query(stepsSql, [req.session.userId, today], (err, stepsResult) => {

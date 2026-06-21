@@ -1,9 +1,7 @@
-/* /public/css/main.css */
 
 /* --- 1. Design System: Colors & Fonts --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* In /public/css/main.css */
 :root {
   --primary-color: #27ae60;
   --primary-dark: #229954;
@@ -16,12 +14,10 @@
   --border-color: #e0e0e0;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --border-radius: 12px;
-  
-  /* ✅ Add this new variable for better readability */
-  --primary-text-on-tint: #3d3d3d; /* A dark gray for high contrast */
+  --primary-text-on-tint: #3d3d3d; 
 }
 
-/* --- 1b. Dynamic Theme Palettes (UPDATED) --- */
+/* --- 1b. Dynamic Theme Palettes --- */
 body.happy { --primary-color: #fbc02d; --primary-dark: #f9a825; --primary-bg-tint: #fffde7; --primary-light-tint: #fff59d; }
 body.sad { --primary-color: #1976d2; --primary-dark: #1565c0; --primary-bg-tint: #e3f2fd; --primary-light-tint: #90caf9; }
 body.angry { --primary-color: #d32f2f; --primary-dark: #c62828; --primary-bg-tint: #ffebee; --primary-light-tint: #ef9a9a; }
@@ -40,20 +36,16 @@ body.neutral { --primary-color: #546e7a; --primary-dark: #455a64; --primary-bg-t
 
 body {
   font-family: 'Poppins', sans-serif;
-  /* ✅ This line now uses the dynamic tint color */
   background-color: var(--primary-bg-tint); 
   color: var(--text-color);
   font-weight: 400;
   line-height: 1.6;
-  transition: background-color 0.4s ease; /* Smooth transition for theme changes */
+  transition: background-color 0.4s ease; 
 }
-
-/* /public/css/main.css */
 
 /* --- 3. Main App Layout (Sliding Sidebar Version) --- */
 .app-container {
   display: grid;
-  /* The sidebar starts collapsed at 80px */
   grid-template-columns: 80px 1fr; 
   min-height: 100vh;
   transition: grid-template-columns 0.4s ease;
@@ -64,7 +56,6 @@ body {
   grid-template-columns: 260px 1fr;
 }
 
-/* ✅ FIX: Explicitly position the main content in the second column */
 .main-content {
   grid-column: 2 / 3;
   padding: 40px;
@@ -74,7 +65,6 @@ body {
 
 /* --- 4. Sidebar Navigation (Updated for Sliding) --- */
 .sidebar {
-  /* ✅ FIX: Explicitly position the sidebar in the first column */
   grid-column: 1 / 2;
   background-color: var(--sidebar-bg);
   padding: 25px 15px;
@@ -89,11 +79,11 @@ body {
 .sidebar-header {
   text-align: center;
   margin-bottom: 30px;
-  padding: 0 5px; /* Add some padding */
+  padding: 0 5px; 
 }
 
 .sidebar-header .profile-pic {
-  width: 50px; /* Consistent size for the icon area */
+  width: 50px; 
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
@@ -143,7 +133,7 @@ body {
 
 .sidebar-nav li a .icon {
   font-size: 22px;
-  min-width: 50px; /* This sets the width of the icon area */
+  min-width: 50px;
   text-align: center;
   transition: color 0.3s ease;
 }
@@ -161,7 +151,6 @@ body {
 .logout-link {
   margin-top: auto;
 }
-/* In /public/css/main.css */
 
 /* --- 5. Reusable Components: Cards, Buttons, Forms --- */
 
@@ -204,7 +193,6 @@ body {
   color: white;
 }
 
-/* ✅ UPDATED Forms Section */
 .form-group {
   margin-bottom: 15px;
   text-align: left;
@@ -228,12 +216,11 @@ select {
   padding: 12px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  font-family: 'Poppins', sans-serif; /* The correct font */
+  font-family: 'Poppins', sans-serif; 
   font-size: 16px;
   color: var(--text-color);
 }
 
-/* /public/css/main.css */
 
 /* --- 6. Modal / Pop-Up Styles --- */
 .modal-overlay {
@@ -243,7 +230,7 @@ select {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
-  display: none; /* Hidden by default */
+  display: none; 
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -301,8 +288,6 @@ select {
   color: var(--text-color);
 }
 
-/* /public/css/main.css */
-
 /* --- 7. Mood Selection Page Styles --- */
 .mood-selection-grid {
   display: grid;
@@ -338,19 +323,17 @@ select {
   font-size: 16px;
 }
 
-/* This ensures that links styled as buttons also get our new rounded corners */
 a.btn {
   border-radius: var(--border-radius);
-  text-decoration: none; /* Also removes the underline */
+  text-decoration: none; 
 }
 
-/* /public/css/main.css */
 
 /* --- 8. Profile Page Specific Styles --- */
 
 .profile-header {
   display: flex;
-  flex-wrap: wrap; /* Allows wrapping on small screens */
+  flex-wrap: wrap;
   align-items: center;
   gap: 30px;
 }
@@ -359,15 +342,14 @@ a.btn {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between; /* This is the key change */
-  flex-grow: 1; /* Allows this section to take up remaining space */
+  justify-content: space-between; 
+  flex-grow: 1; 
 }
 
 .profile-details {
   text-align: left;
 }
 
-/* /public/css/main.css */
 
 /* --- 9. Habit Page Styles --- */
 .stats-grid {
@@ -430,10 +412,9 @@ a.btn {
 }
 
 .habit-actions .btn-delete:hover {
-  color: #d32f2f; /* Red on hover */
+  color: #d32f2f;
 }
 
-/* /public/css/main.css */
 
 /* --- 10. Link Button Style --- */
 .link-button {
@@ -450,7 +431,6 @@ a.btn {
   text-decoration: underline;
 }
 
-/* /public/css/main.css */
 
 /* --- 11. Chart & Link Updates --- */
 
@@ -490,9 +470,6 @@ a.btn {
   height: 450px;
 }
 
-/* /public/css/main.css */
-
-/* In /public/css/main.css, replace the existing section 12 */
 
 /* --- 12. To-Do List Styles --- */
 .todo-list {
@@ -531,7 +508,6 @@ a.btn {
   color: var(--text-light);
 }
 
-/* ✅ This is the new style for the delete button */
 .todo-item .btn-delete {
   background: none;
   border: none;
@@ -551,7 +527,6 @@ a.btn {
   color: #d32f2f;
 }
 
-/* /public/css/main.css */
 
 /* --- 14. To-Do Progress Styles --- */
 .progress-summary {
@@ -574,7 +549,6 @@ a.btn {
   transition: width 0.5s ease-in-out;
 }
 
-/* /public/css/main.css */
 
 /* --- 15. Dashboard Widget Styles --- */
 .dashboard-grid {
@@ -593,7 +567,7 @@ a.btn {
   margin: 15px auto;
   background: conic-gradient(var(--primary-color) calc(var(--p, 0) * 1%), var(--primary-bg-tint) 0);
   transition: background 0.4s ease;
-}
+}  
 
 .progress-ring::before {
   content: "";
@@ -618,12 +592,11 @@ a.btn {
   margin-top: -5px;
 }
 
-/* /public/css/main.css */
 
 /* --- 17. Exercise Page Styles --- */
 .exercise-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Main content takes 2/3, stats take 1/3 */
+  grid-template-columns: 2fr 1fr;
   gap: 30px;
   align-items: flex-start;
 }
@@ -664,30 +637,27 @@ a.btn {
   color: var(--primary-color);
 }
 
-/* /public/css/main.css */
 
-/* --- Add this to control GIF size and aspect ratio --- */
 .exercise-gif {
   width: 100%;
-  max-height: 300px; /* Adjust this value as needed */
-  object-fit: contain; /* Ensures the whole image is visible without cropping */
+  max-height: 300px;
+  object-fit: contain; 
   border-radius: 8px;
   margin-top: 15px;
-  background-color: var(--primary-bg-tint); /* Optional: add a background to fill empty space if object-fit is used */
+  background-color: var(--primary-bg-tint);
 }
 
 /* In /public/css/main.css */
 
 .timer-input-group {
   display: flex;
-  justify-content: center; /* ✅ This centers the items */
+  justify-content: center; 
   align-items: center;
   gap: 10px;
   max-width: 250px;
-  margin: 0 auto 15px auto; /* This centers the group itself */
+  margin: 0 auto 15px auto; 
 }
 
-/* /public/css/main.css */
 
 /* --- 19. Pomodoro Timer Styles --- */
 .pomodoro-container {
@@ -741,13 +711,12 @@ a.btn {
   font-weight: 500;
 }
 
-/* /public/css/main.css */
 
 /* --- 21. Chat Page Styles --- */
 .chat-window {
   display: flex;
   flex-direction: column;
-  height: 70vh; /* Adjust height as needed */
+  height: 70vh;
 }
 
 .messages-container {
@@ -799,7 +768,6 @@ a.btn {
   margin: 0;
 }
 
-/* Typing Indicator */
 .typing-indicator {
   display: flex;
   align-items: center;
@@ -821,7 +789,6 @@ a.btn {
   40% { transform: scale(1.0); }
 }
 
-/* /public/css/main.css */
 
 /* --- 22. Admin Page Styles --- */
 .admin-table {
@@ -853,13 +820,13 @@ a.btn {
   font-size: 14px;
 }
 
-/* /public/css/main.css */
+
 
 /* --- 23. Chat Page Fixes --- */
 
-/* This targets the bubble that CONTAINS the typing indicator */
+
 .message-bubble.assistant.typing {
-  padding: 12px 15px; /* Add padding to contain the dots */
+  padding: 12px 15px; 
   display: flex;
   align-items: center;
 }
